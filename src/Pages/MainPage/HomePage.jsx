@@ -4,11 +4,11 @@ import { Button, Skeleton, Carousel } from "antd";
 import { VideoCameraAddOutlined, SafetyOutlined, TeamOutlined, GlobalOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import "./Mainpage.css";
 
-import CarouselImg1 from "../../assets/Images/Corousel_img_1.jpg";
-import CarouselImg2 from "../../assets/Images/Corousel_img_2.jpg";
-import CarouselImg3 from "../../assets/Images/Corousel_img_3.jpg";
-import CarouselImg4 from "../../assets/Images/Corousel_img_4.jpg";
-import CarouselImg5 from "../../assets/Images/Corousel_img_5.jpg";
+import CarouselImg1 from "../../assets/Images/Corousel1.jpg";
+import CarouselImg2 from "../../assets/Images/Corousel2.jpg";
+import CarouselImg3 from "../../assets/Images/Corousel3.jpg";
+import CarouselImg4 from "../../assets/Images/Corousel4.jpg";
+import CarouselImg5 from "../../assets/Images/Corousel5.jpg";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
