@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import Home from "../Pages/Home";
+import Home from "../Pages/LandingPage/LandingPageHome";
 import Login from '../Components/Login';
 import Signup from '../Components/Signup';
 import ForgotPass from '../Components/ForgotPass/ForgotPass';
@@ -10,6 +10,7 @@ import LoadingSpinner from '../Components/LoadingSpinner';
 import Meetings from '../Pages/MainPage/Meetings';
 import HomePage from '../Pages/MainPage/HomePage';
 import ProfilePage from '../Pages/MainPage/ProfilePage';
+import GroupCall from '../Pages/MainPage/GroupCall';
 
 const AuthLayout = () => {
   const location = useLocation();
@@ -17,26 +18,24 @@ const AuthLayout = () => {
   const [prevPath, setPrevPath] = useState('');
 
   useEffect(() => {
-
-    const currentBasePath = '/' + location.pathname.split('/')[1];
-    const prevBasePath = '/' + prevPath.split('/')[1];
-
-    const isDashboardNavigation = 
-      currentBasePath === '/dashboard' && prevBasePath === '/dashboard';
-    
-    if (!isDashboardNavigation) {
-      setLoading(true);
-      
-      const timer = setTimeout(() => {
-        setLoading(false);
-      }, 750);
-      
-      return () => clearTimeout(timer);
+    if (prevPath) {
+      const currentBasePath = '/' + location.pathname.split('/')[1];
+      const prevBasePath = '/' + prevPath.split('/')[1];
+      const isDashboardNavigation = 
+        currentBasePath === '/dashboard' && prevBasePath === '/dashboard';
+      if (!isDashboardNavigation) {
+        setLoading(true);
+        
+        const timer = setTimeout(() => {
+          setLoading(false);
+        }, 750);
+        
+        return () => clearTimeout(timer);
+      }
     }
     
     setPrevPath(location.pathname);
-  }, [location.pathname]);
-
+  }, [location.pathname, prevPath]);
   useEffect(() => {
     setPrevPath(location.pathname);
   }, []);
@@ -51,11 +50,12 @@ const AuthLayout = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgotPass" element={<ForgotPass />} />
-          <Route path="/dashboard" element={<Dashboard />}>
+          <Route path="/dashboard/*" element={<Dashboard />}>
             <Route index element={<HomePage />} />
             <Route path="profile" element={<ProfilePage/>} />
             <Route path="meetings" element={<Meetings />} />
           </Route>
+          <Route path='/group_call' element={<GroupCall />}/>
           <Route path="/*" element={<NotFound />} />
         </Routes>
       )}

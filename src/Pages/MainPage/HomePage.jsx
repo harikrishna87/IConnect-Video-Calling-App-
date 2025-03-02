@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Skeleton, Carousel } from "antd";
 import { VideoCameraAddOutlined, SafetyOutlined, TeamOutlined, GlobalOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import "./Mainpage.css";
@@ -15,6 +15,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 const HomePage = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const auth = getAuth();
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const HomePage = () => {
 
       setTimeout(() => {
         setLoading(false);
-      }, 1500);
+      }, 2000);
     });
 
     return () => unsubscribe();
@@ -52,6 +53,10 @@ const HomePage = () => {
     { src: CarouselImg4, alt: "Business meetings" },
     { src: CarouselImg5, alt: "Global connectivity" }
   ];
+
+  const handleGroupCall = () => {
+    navigate("/group_call");
+  }
 
   return (
     <>
@@ -92,6 +97,7 @@ const HomePage = () => {
                   size="large"
                   icon={<VideoCameraAddOutlined />}
                   className="start-button"
+                  onClick={handleGroupCall}
                 >
                   Start Instant Meeting
                 </Button>
@@ -139,7 +145,7 @@ const HomePage = () => {
                       src={img.src}
                       alt={img.alt}
                       className="img-fluid carousel-image"
-                      style={{ borderRadius: "15px", width: "100%", height: "auto" }}
+                      style={{ borderRadius: "15px", width: "100%", height: "400px" }}
                     />
                   </div>
                 ))}

@@ -64,8 +64,8 @@ const Meetings = () => {
             {loading ? (
                 <div className="container">
                     <div className="header">
-                        <Skeleton.Button active style={{ width: "200px" }} />
-                        <Skeleton.Button active style={{ width: "150px" }} />
+                        <Skeleton.Input active size={"small"}/>
+                        <Skeleton.Input active size={"small"} />
                     </div>
                 </div>
             ) : (

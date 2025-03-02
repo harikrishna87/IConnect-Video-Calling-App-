@@ -10,11 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@zegocloud/zego-uikit-prebuilt": "^2.14.1",
     "antd": "^5.24.2",
     "antd-icons": "^0.1.0-alpha.1",
     "bootstrap": "^5.3.3",
     "firebase": "^11.3.1",
-    "moment": "^2.30.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.2.0",

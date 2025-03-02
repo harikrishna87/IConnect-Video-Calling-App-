@@ -107,6 +107,24 @@ body {
   }
 }
 
+.hero-carousel {
+  margin-top: 30px;
+}
+
+@media screen and (min-width: 900px) and (max-width: 1190px) {
+  .hero-carousel {
+    margin-top: 100px;
+  }
+}
+
+@media screen and (min-width: 1190px) and (max-width: 1350px) {
+  .hero-carousel {
+    margin-top: 70px;
+  }
+}
+
+
+
 .feature-card {
   padding: 20px;
   border-radius: 10px;

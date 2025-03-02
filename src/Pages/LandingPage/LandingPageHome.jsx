@@ -1,8 +1,8 @@
 import React from 'react'
 import {Link, useNavigate} from "react-router-dom"
-import "../Components/component.css"
-import AboutUs from './AboutUs'
-import Header from '../Components/Header'
+import "../../Components/component.css"
+import AboutUs from '../LandingPage/LandingPageAboutUs'
+import Header from '../../Components/Header'
 
 const Home = () => {
 
