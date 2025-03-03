@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone, SyncOutlined } from "@ant-design/icons";
@@ -17,6 +17,20 @@ const Login = () => {
     setUserdetails({ ...userdetails, [e.target.name]: e.target.value });
   };
 
+  const handleLoginSuccess = () => {
+    // Check if there's a saved redirect path
+    const redirectPath = localStorage.getItem('redirectAfterLogin');
+    if (redirectPath) {
+      // Clear the stored path
+      localStorage.removeItem('redirectAfterLogin');
+      // Navigate to the intended destination
+      setTimeout(() => navigate(redirectPath, { replace: true }), 2000);
+    } else {
+      // Regular navigation to dashboard
+      setTimeout(() => navigate("/dashboard", { replace: true }), 2000);
+    }
+  };
+
   const handleEmailLogin = (e) => {
     e.preventDefault();
     setLoading({ ...loading, email: true });
@@ -24,7 +38,7 @@ const Login = () => {
     signInWithEmailAndPassword(auth, userdetails.email, userdetails.password)
       .then(() => {
         toast.success("User Successfully Logged In");
-        setTimeout(() => navigate("/dashboard", { replace: true }), 2000);
+        handleLoginSuccess();
       })
       .catch(() => toast.error("Invalid email or password"))
       .finally(() => setLoading({ ...loading, email: false }));
@@ -35,7 +49,7 @@ const Login = () => {
     signInWithPopup(auth, googleProvider)
       .then(() => {
         toast.success("Google login successful!!!");
-        setTimeout(() => navigate("/dashboard", { replace: true }), 2000);
+        handleLoginSuccess();
       })
       .catch(() => toast.error("Google login failed"))
       .finally(() => setLoading({ ...loading, google: false }));
@@ -46,7 +60,7 @@ const Login = () => {
     signInAnonymously(auth)
       .then(() => {
         toast.success("Logged in as Guest!!!");
-        setTimeout(() => navigate("/dashboard", { replace: true }), 2000);
+        handleLoginSuccess();
       })
       .catch(() => toast.error("Guest login failed"))
       .finally(() => setLoading({ ...loading, guest: false }));

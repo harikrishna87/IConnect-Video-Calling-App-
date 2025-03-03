@@ -107,7 +107,7 @@ const HomePage = () => {
                     <SafetyOutlined /> Secure
                   </div>
                   <div className="feature-pill">
-                    <TeamOutlined /> Up to 100 Users
+                    <TeamOutlined /> Up to 20 Users
                   </div>
                   <div className="feature-pill">
                     <GlobalOutlined /> Global Access
@@ -204,7 +204,7 @@ const HomePage = () => {
                 <div className="feature-card">
                   <div className="feature-icon"><TeamOutlined /></div>
                   <h3>Large Group Support</h3>
-                  <p>Host meetings with up to 100 participants without quality loss.</p>
+                  <p>Host meetings with up to 20 participants without quality loss.</p>
                 </div>
               </div>
               <div className="col-12 col-md-4 mb-4">
