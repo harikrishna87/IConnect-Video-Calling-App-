@@ -8,7 +8,7 @@ import {
   VideoCameraOutlined,
   InfoCircleOutlined
 } from '@ant-design/icons';
-import { Button, Layout, Menu, theme, Drawer, Divider, Typography } from 'antd';
+import { Button, Layout, Menu, theme, Drawer, Divider, Modal } from 'antd';
 import { auth } from "../../Firebase/Firebase";
 import { signOut } from "firebase/auth";
 import { toast, ToastContainer } from "react-toastify";
@@ -25,9 +25,10 @@ const Dashboard = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedKey, setSelectedKey] = useState('/dashboard');
+  const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const {
     token: { colorBgContainer, borderRadiusLG, colorPrimary },
   } = theme.useToken();
@@ -54,22 +55,29 @@ const Dashboard = () => {
   }, [location.pathname]);
 
   const handleLogout = async () => {
-    const confirmLogout = window.confirm("Are you sure you want to logout?");
-    if (!confirmLogout) return;
-
     try {
       await signOut(auth);
       toast.success("User logged out successfully");
-      setTimeout(() => navigate("/"), 2000);
+      setIsLogoutModalVisible(false);
+      navigate("/");
     } catch (error) {
       toast.error("Logout failed: " + error.message);
+      setIsLogoutModalVisible(false);
     }
+  };
+
+  const showLogoutModal = () => {
+    setIsLogoutModalVisible(true);
+  };
+
+  const handleLogoutCancel = () => {
+    setIsLogoutModalVisible(false);
   };
 
   const handleMenuClick = ({ key }) => {
     setSelectedKey(key);
     navigate(key);
-    
+
     if (isMobile) {
       setDrawerVisible(false);
     }
@@ -136,7 +144,7 @@ const Dashboard = () => {
             selectedKeys={[selectedKey]}
             onClick={handleMenuClick}
             items={menuItems}
-            style={{background: "white", color: "black"}}
+            style={{ background: "white", color: "black" }}
           />
         </Sider>
       )}
@@ -200,7 +208,7 @@ const Dashboard = () => {
               type="primary"
               danger
               icon={<LogoutOutlined />}
-              onClick={handleLogout}
+              onClick={showLogoutModal}
             >
               Logout
             </Button>
@@ -265,7 +273,7 @@ const Dashboard = () => {
               type="primary"
               danger
               icon={<LogoutOutlined />}
-              onClick={handleLogout}
+              onClick={showLogoutModal}
               block
             >
               Logout
@@ -273,6 +281,24 @@ const Dashboard = () => {
           </div>
         </Drawer>
       )}
+
+      <Modal
+        visible={isLogoutModalVisible}
+        onOk={handleLogout}
+        onCancel={handleLogoutCancel}
+        okText="Yes, Logout"
+        cancelText="Cancel"
+      >
+        <h1 style={{
+          fontSize: "23px",
+          color: "red",
+          fontWeight: "bold"
+        }}>Logout Confirmation</h1>
+        <p style={{
+          fontSize: "19px",
+          fontWeight: "400"
+        }}>Are you sure you want to log out?</p>
+      </Modal>
     </Layout>
   );
 };

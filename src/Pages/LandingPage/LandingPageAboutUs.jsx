@@ -233,7 +233,7 @@ const LandingPageAboutUs = () => {
               {[
                 { icon: <VideoCameraOutlined />, title: "HD Video Calls", description: "Crystal clear video quality with adaptive resolution to ensure smooth connections even with varying network conditions." },
                 { icon: <AudioOutlined />, title: "Voice Calling", description: "Premium audio quality with noise cancellation technology for crisp, clear conversations without distractions." },
-                { icon: <TeamOutlined />, title: "Group Meetings", description: "Host up to 100 participants in a single call with gallery view and smart speaker highlighting." },
+                { icon: <TeamOutlined />, title: "Group Meetings", description: "Host up to 20 participants in a single call with gallery view and smart speaker highlighting." },
                 { icon: <GlobalOutlined />, title: "Global Reach", description: "Low-latency servers across the globe ensure consistent quality for international calls." },
                 { icon: <RocketOutlined />, title: "Screen Sharing", description: "Share your screen with a single click for seamless presentations and collaboration." },
                 { icon: <LockOutlined />, title: "Secure Communication", description: "End-to-end encryption ensures your conversations remain private and secure at all times." },

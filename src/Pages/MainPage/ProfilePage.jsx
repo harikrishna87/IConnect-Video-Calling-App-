@@ -1,25 +1,25 @@
 import React from 'react';
-import { 
-  Button, 
-  Card, 
-  Space, 
-  Typography, 
-  Avatar, 
-  Row, 
-  Col, 
-  Divider, 
-  Input, 
-  Skeleton, 
+import {
+  Button,
+  Card,
+  Space,
+  Typography,
+  Avatar,
+  Row,
+  Col,
+  Divider,
+  Input,
+  Skeleton,
   Form,
   Upload
 } from 'antd';
-import { 
-  CloseOutlined, 
-  EditOutlined, 
-  SaveOutlined, 
-  LinkedinOutlined, 
-  GithubOutlined, 
-  PhoneOutlined, 
+import {
+  CloseOutlined,
+  EditOutlined,
+  SaveOutlined,
+  LinkedinOutlined,
+  GithubOutlined,
+  PhoneOutlined,
   CalendarOutlined,
   UserOutlined,
   UploadOutlined
@@ -56,7 +56,7 @@ const ProfilePage = () => {
   const CustomAvatarSkeleton = () => (
     <div style={{ textAlign: 'center' }}>
       <Skeleton.Avatar active size={150} shape="square" style={{ borderRadius: 8 }} />
-      <div style={{ height: 16, marginTop:"10px" }}>
+      <div style={{ height: 16, marginTop: "10px" }}>
         <Skeleton.Button active size="small" style={{ width: 120 }} />
       </div>
     </div>
@@ -70,30 +70,30 @@ const ProfilePage = () => {
             margin: 0,
             ...gradientTextStyle
           }}>
-            User Profile
+            Profile
           </Title>
         }
         extra={
           isEditing ? (
             <Space>
-              <Button 
-                onClick={handleCancel} 
+              <Button
+                onClick={handleCancel}
                 icon={<CloseOutlined />}
                 danger
               >
                 Cancel
               </Button>
-              <Button 
-                type="primary" 
-                onClick={handleSave} 
+              <Button
+                type="primary"
+                onClick={handleSave}
                 icon={<SaveOutlined />}
               >
                 Save
               </Button>
             </Space>
           ) : (
-            <Button 
-              type="primary" 
+            <Button
+              type="primary"
               icon={<EditOutlined />}
               onClick={handleEdit}
             >
@@ -101,9 +101,9 @@ const ProfilePage = () => {
             </Button>
           )
         }
-        style={{ 
-          width: '100%', 
-          marginTop: 16, 
+        style={{
+          width: '100%',
+          marginTop: 16,
           borderRadius: 12,
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
         }}
@@ -202,13 +202,13 @@ const ProfilePage = () => {
               </Skeleton>
             </Col>
           </Row>
-          
+
           <Divider style={{ margin: "12px 0" }} />
-          
+
           <Row gutter={24} style={{ marginBottom: 15 }}>
             <Col xs={24} sm={12}>
               <Skeleton loading={loading} active paragraph={{ rows: 4 }}>
-                <Title level={3} style={{...gradientTextStyle, marginBottom: "8px"}}>
+                <Title level={3} style={{ ...gradientTextStyle, marginBottom: "8px" }}>
                   Social Links
                 </Title>
                 <div style={{ marginBottom: "4px" }}>
@@ -218,9 +218,9 @@ const ProfilePage = () => {
                     style={{ marginBottom: "0" }}
                   >
                     {isEditing ? (
-                      <Input 
+                      <Input
                         prefix={<LinkedinOutlined style={{ color: '#0077B5' }} />}
-                        placeholder="Enter LinkedIn URL" 
+                        placeholder="Enter LinkedIn URL"
                       />
                     ) : (
                       <Title level={5} style={{
@@ -236,7 +236,7 @@ const ProfilePage = () => {
                     )}
                   </Form.Item>
                 </div>
-                
+
                 <div style={{ marginBottom: "4px" }}>
                   <Text strong style={{ fontSize: 18 }}>GitHub:</Text>
                   <Form.Item
@@ -244,9 +244,9 @@ const ProfilePage = () => {
                     style={{ marginBottom: "0" }}
                   >
                     {isEditing ? (
-                      <Input 
+                      <Input
                         prefix={<GithubOutlined style={{ color: '#333' }} />}
-                        placeholder="Enter GitHub URL" 
+                        placeholder="Enter GitHub URL"
                       />
                     ) : (
                       <Title level={5} style={{
@@ -264,10 +264,10 @@ const ProfilePage = () => {
                 </div>
               </Skeleton>
             </Col>
-            
+
             <Col xs={24} sm={12}>
               <Skeleton loading={loading} active paragraph={{ rows: 4 }}>
-                <Title level={3} style={{...gradientTextStyle, marginBottom: "8px"}}>
+                <Title level={3} style={{ ...gradientTextStyle, marginBottom: "8px" }}>
                   Contact Info
                 </Title>
                 <div style={{ marginBottom: "4px" }}>
@@ -277,9 +277,9 @@ const ProfilePage = () => {
                     style={{ marginBottom: "0" }}
                   >
                     {isEditing ? (
-                      <Input 
+                      <Input
                         prefix={<PhoneOutlined style={{ color: '#52c41a' }} />}
-                        placeholder="Enter mobile number" 
+                        placeholder="Enter mobile number"
                       />
                     ) : (
                       <Title level={5} style={{
@@ -295,7 +295,7 @@ const ProfilePage = () => {
                     )}
                   </Form.Item>
                 </div>
-                
+
                 <div style={{ marginBottom: "4px" }}>
                   <Text strong style={{ fontSize: 18 }}>Date of Birth:</Text>
                   <Form.Item
@@ -303,9 +303,9 @@ const ProfilePage = () => {
                     style={{ marginBottom: "0" }}
                   >
                     {isEditing ? (
-                      <Input 
+                      <Input
                         prefix={<CalendarOutlined style={{ color: '#f5222d' }} />}
-                        placeholder="DD / MM / YYYY" 
+                        placeholder="DD / MM / YYYY"
                       />
                     ) : (
                       <Title level={5} style={{
@@ -329,7 +329,7 @@ const ProfilePage = () => {
 
           <Skeleton loading={loading} active paragraph={{ rows: 1 }}>
             <div style={{ marginBottom: "5px" }}>
-              <Title level={3} style={{...gradientTextStyle, marginBottom: "4px"}}>
+              <Title level={3} style={{ ...gradientTextStyle, marginBottom: "4px" }}>
                 Account Created On
               </Title>
 

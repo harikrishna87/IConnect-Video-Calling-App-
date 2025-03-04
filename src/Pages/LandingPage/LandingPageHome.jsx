@@ -72,7 +72,7 @@ const LandingPageHero = () => {
   const navigate = useNavigate();
 
   const handleLoginButton = () => {
-      navigate("/login")
+    navigate("/login")
   }
 
   const features = [
@@ -103,13 +103,13 @@ const LandingPageHero = () => {
   ];
 
   return (
-    <div className="hero-container" style={{ 
+    <div className="hero-container" style={{
       fontFamily: 'Times New Roman, serif',
       background: 'transparent',
       maxWidth: '1200px',
       margin: '0 auto',
       padding: '0 20px'
-      }}>
+    }}>
       <motion.div
         initial="hidden"
         animate="visible"
@@ -119,20 +119,20 @@ const LandingPageHero = () => {
           <Col xs={24} md={24} lg={12} className="hero-text-col">
             {loading ? (
               <div className="skeleton-container">
-                <Skeleton active paragraph={{ rows: 2 }} title={{ width: '80%' }} style={{marginTop: "50px"}} />
-                <div style={{ marginTop: '2em' }}>
-                  <Skeleton.Button active size="large" shape="default" style={{ width: 150, marginRight: 16 , marginBottom: 10}} />
+                <Skeleton active paragraph={{ rows: 2 }} title={{ width: '80%' }} style={{ marginTop: "50px", marginBottom: 30 }} />
+                <div style={{ marginTop: '2em', marginBottom: 20 }}>
+                  <Skeleton.Button active size="large" shape="default" style={{ width: 150, marginRight: 16, marginBottom: 20 }} />
                   <Skeleton.Button active size="large" shape="default" style={{ width: 120 }} />
                 </div>
               </div>
             ) : (
               <div className="hero-text-wrapper">
                 <motion.div variants={itemVariants}>
-                  <Title level={1} style={{ 
-                    fontFamily: 'Times New Roman, serif', 
-                    fontSize: 'clamp(2rem, 5vw, 3.5rem)', 
+                  <Title level={1} style={{
+                    fontFamily: 'Times New Roman, serif',
+                    fontSize: 'clamp(2.5em, 5vw, 3.5em)',
                     fontWeight: 700,
-                    background: 'linear-gradient(90deg, #4B56D2 0%, #82C3EC 100%)',
+                    background: 'linear-gradient(135deg, #3c8dff 0%, #6a5aff 100%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent'
                   }}>
@@ -140,11 +140,11 @@ const LandingPageHero = () => {
                   </Title>
                 </motion.div>
                 <motion.div variants={itemVariants}>
-                  <Paragraph className="hero-subtitle" style={{ 
-                    fontFamily: 'Times New Roman, serif', 
-                    fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+                  <Paragraph className="hero-subtitle" style={{
+                    fontFamily: 'Times New Roman, serif',
+                    fontSize: 'clamp(1.8em, 2vw, 1.5em)',
                     color: '#555',
-                    marginBottom: '2rem',
+                    marginBottom: '2em',
                     lineHeight: 1.6
                   }}>
                     Seamless video calls, limitless connections - redefine virtual meetings with ease
@@ -156,15 +156,14 @@ const LandingPageHero = () => {
                     flexWrap: 'wrap',
                     gap: '1rem'
                   }}>
-                    <Button 
-                      type="primary" 
-                      size="large" 
+                    <Button
+                      type="primary"
+                      size="large"
                       icon={<VideoCameraOutlined />}
-                      style={{ 
-                        background: 'linear-gradient(90deg, #4B56D2 0%, #82C3EC 100%)',
+                      style={{
+                        background: 'linear-gradient(135deg, #3c8dff 0%, #6a5aff 100%)',
                         border: 'none',
                         height: '50px',
-                        borderRadius: '25px',
                         padding: '0 30px',
                         fontSize: '16px',
                         boxShadow: '0 10px 20px rgba(75, 86, 210, 0.2)'
@@ -173,11 +172,10 @@ const LandingPageHero = () => {
                     >
                       Start Call Now
                     </Button>
-                    <Button 
+                    <Button
                       size="large"
-                      style={{ 
+                      style={{
                         height: '50px',
-                        borderRadius: '25px',
                         padding: '0 30px',
                         fontSize: '16px',
                         borderColor: '#4B56D2',
@@ -196,11 +194,28 @@ const LandingPageHero = () => {
 
           <Col xs={24} md={24} lg={12} className="hero-image-container">
             {loading ? (
-              <div className="carousel-placeholder">
-                <Skeleton.Image active style={{ width: '100%', height: '100%' }} />
+              <div
+                className="carousel-placeholder"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100%'
+                }}
+              >
+                <Skeleton.Image
+                  active
+                  style={{
+                    marginTop: "80px",
+                    width: '100%',
+                    maxWidth: '500px',
+                    height: 'auto',
+                    padding: "125px"
+                  }}
+                />
               </div>
             ) : (
-              <motion.div 
+              <motion.div
                 className="carousel-container"
                 variants={itemVariants}
                 style={{
@@ -209,13 +224,13 @@ const LandingPageHero = () => {
                   marginTop: '2em'
                 }}
               >
-                <Carousel 
+                <Carousel
                   autoplay={{ dotDuration: true }}
                   autoplaySpeed={5000}
                   effect="fade"
-                  style={{ borderRadius: '20px', overflow: 'hidden' }}
+                  style={{ borderRadius: '20px', overflow: 'hidden', marginTop: "50px" }}
                 >
-                  <div>
+                  <div className='coro_img'>
                     <img src={Corousel1} alt="" style={{ width: '100%', borderRadius: '12px' }} />
                   </div>
                   <div>
@@ -236,13 +251,13 @@ const LandingPageHero = () => {
           </Col>
         </Row>
 
-        <Row gutter={[24, 24]} className="features-row" style={{ marginTop: '80px' }}>
+        <Row gutter={[24, 24]} className="features-row" style={{ marginTop: '100px', marginBottom: "30px" }}>
           {loading ? (
             <>
               {[1, 2, 3, 4].map((item) => (
                 <Col xs={24} sm={12} lg={6} key={item}>
                   <Card className="feature-card-skeleton">
-                    <Skeleton active avatar paragraph={{ rows: 2 }} />
+                    <Skeleton active avatar paragraph={{ rows: 3 }} />
                   </Card>
                 </Col>
               ))}
@@ -258,19 +273,20 @@ const LandingPageHero = () => {
                   custom={index}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card 
-                    className="feature-card" 
-                    style={{ 
-                      borderRadius: '16px', 
+                  <Card
+                    className="feature-card"
+                    style={{
+                      borderRadius: '16px',
                       overflow: 'hidden',
                       border: 'none',
                       height: '300px',
-                      textAlign: 'center'
+                      textAlign: 'center',
+                      marginBottom: "30px"
                     }}
                   >
-                    <div 
-                      className="feature-card-icon" 
-                      style={{ 
+                    <div
+                      className="feature-card-icon"
+                      style={{
                         color: feature.color,
                         fontSize: '2.5rem',
                         marginBottom: '20px',
@@ -286,16 +302,16 @@ const LandingPageHero = () => {
                       {feature.icon}
                     </div>
                     <div className="feature-card-content">
-                      <h3 style={{ 
-                        fontFamily: 'Times New Roman, serif', 
-                        fontSize: '1.5rem', 
+                      <h3 style={{
+                        fontFamily: 'Times New Roman, serif',
+                        fontSize: '1.5rem',
                         fontWeight: 'bold',
                         marginBottom: '10px',
                         color: feature.color
                       }}>
                         {feature.title}
                       </h3>
-                      <p style={{ 
+                      <p style={{
                         fontFamily: 'Times New Roman, serif',
                         color: '#666',
                         fontSize: '1rem',
@@ -311,7 +327,7 @@ const LandingPageHero = () => {
           )}
         </Row>
       </motion.div>
-      
+
       <style jsx>{`
         @media (max-width: 768px) {
 
