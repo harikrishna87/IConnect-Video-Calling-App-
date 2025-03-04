@@ -11,8 +11,10 @@ import Meetings from '../Pages/MainPage/Meetings';
 import HomePage from '../Pages/MainPage/HomePage';
 import ProfilePage from '../Pages/MainPage/ProfilePage';
 import GroupCall from '../Pages/MainPage/GroupCall';
+import MainPageAboutUs from '../Pages/MainPage/MainPageAboutUs';
+import LandingPageLayout from '../Layout/LandingPageLayout';
 
-const AuthLayout = () => {
+const RouterPage = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [prevPath, setPrevPath] = useState('');
@@ -21,19 +23,19 @@ const AuthLayout = () => {
     if (prevPath) {
       const currentBasePath = '/' + location.pathname.split('/')[1];
       const prevBasePath = '/' + prevPath.split('/')[1];
-      const isDashboardNavigation = 
+      const isDashboardNavigation =
         currentBasePath === '/dashboard' && prevBasePath === '/dashboard';
       if (!isDashboardNavigation) {
         setLoading(true);
-        
+
         const timer = setTimeout(() => {
           setLoading(false);
         }, 750);
-        
+
         return () => clearTimeout(timer);
       }
     }
-    
+
     setPrevPath(location.pathname);
   }, [location.pathname, prevPath]);
   useEffect(() => {
@@ -46,16 +48,17 @@ const AuthLayout = () => {
         <LoadingSpinner />
       ) : (
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<LandingPageLayout />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgotPass" element={<ForgotPass />} />
           <Route path="/dashboard/*" element={<Dashboard />}>
             <Route index element={<HomePage />} />
-            <Route path="profile" element={<ProfilePage/>} />
+            <Route path="profile" element={<ProfilePage />} />
             <Route path="meetings" element={<Meetings />} />
+            <Route path='about' element={<MainPageAboutUs />} />
           </Route>
-          <Route path='/group_call' element={<GroupCall />}/>
+          <Route path='/group_call' element={<GroupCall />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>
       )}
@@ -63,4 +66,4 @@ const AuthLayout = () => {
   );
 };
 
-export default AuthLayout;
+export default RouterPage;

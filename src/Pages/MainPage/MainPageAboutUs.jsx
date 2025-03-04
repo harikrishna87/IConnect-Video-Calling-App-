@@ -13,14 +13,14 @@ const { Content } = Layout;
 const MotionCard = motion(Card);
 const MotionRow = motion(Row);
 
-const LandingPageAboutUs = () => {
+const MainPageAboutUs = () => {
   const cardsRef = useRef([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, []);
@@ -69,13 +69,13 @@ const LandingPageAboutUs = () => {
   const navigate = useNavigate();
 
   const handlegetstarted = () => {
-    navigate("/login")
+    navigate("/dashboard")
   }
   const fontStyle = { fontFamily: "Times New Roman" };
 
   return (
     <Layout style={{ background: 'transparent' }}>
-      <Content style={{ padding: '25px', maxWidth: '1200px', margin: '0 auto', background: 'transparent' }}>
+      <Content style={{ padding: '50px 50px', maxWidth: '1200px', margin: '0 auto', background: 'transparent' }}>
         {loading ? (
           <div>
             <Skeleton active paragraph={{ rows: 2 }} title={{ width: '40%', style: { height: '3rem' } }} />
@@ -89,7 +89,7 @@ const LandingPageAboutUs = () => {
           >
             <Typography>
               <Title level={1} style={{
-                fontSize: '3em', marginBottom: '1rem', ...fontStyle,
+                fontSize: '2em', marginBottom: '1rem', ...fontStyle,
                 color: "transparent",
                 background: "linear-gradient(135deg, #3c8dff 0%, #6a5aff 100%)",
                 WebkitBackgroundClip: "text",
@@ -315,4 +315,4 @@ const LandingPageAboutUs = () => {
   );
 };
 
-export default LandingPageAboutUs;
+export default MainPageAboutUs;

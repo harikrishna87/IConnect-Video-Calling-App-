@@ -6,7 +6,7 @@ import {
   LogoutOutlined,
   HomeOutlined,
   VideoCameraOutlined,
-  GlobalOutlined
+  InfoCircleOutlined
 } from '@ant-design/icons';
 import { Button, Layout, Menu, theme, Drawer, Divider, Typography } from 'antd';
 import { auth } from "../../Firebase/Firebase";
@@ -82,6 +82,11 @@ const Dashboard = () => {
       label: 'HomePage',
     },
     {
+      key: '/dashboard/about',
+      icon: <InfoCircleOutlined />,
+      label: 'About Us',
+    },
+    {
       key: '/dashboard/meetings',
       icon: <VideoCameraOutlined />,
       label: 'Meetings',
@@ -90,13 +95,7 @@ const Dashboard = () => {
       key: '/dashboard/profile',
       icon: <UserOutlined />,
       label: 'Profile',
-    },
-    // {
-    //   key: '4',
-    //   icon: <GlobalOutlined />,
-    //   label: 'Communities',
-    //   onClick: handleMenuClick,
-    // }
+    }
   ];
 
   return (

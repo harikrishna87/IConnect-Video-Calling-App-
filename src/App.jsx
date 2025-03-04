@@ -1,12 +1,13 @@
+import { Routes } from 'react-router-dom'
 import './App.css'
 import "./Components/component.css"
-import AuthLayout from './Layout/AuthLayout'
+import RouterPage from './Routes/RouterPage'
 
 function App() {
 
   return (
     <>
-      <AuthLayout />
+      <RouterPage />
     </>
   )
 }
