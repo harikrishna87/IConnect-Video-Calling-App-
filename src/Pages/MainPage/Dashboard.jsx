@@ -47,6 +47,20 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    window.history.pushState(null, "", window.location.pathname);
+
+    const handlePopState = () => {
+      window.history.pushState(null, "", window.location.pathname);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  useEffect(() => {
     if (location.pathname === '/dashboard') {
       setSelectedKey('/dashboard');
     } else {
