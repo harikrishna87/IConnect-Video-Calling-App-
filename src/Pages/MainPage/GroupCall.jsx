@@ -52,6 +52,7 @@ const GroupCall = () => {
       initializeNewMeeting();
       return;
     }
+    
     axios.get(`https://iconnect-back-end.onrender.com/meet/meetings/${roomID}`)
       .then(response => {
         if (!response.data) {
@@ -63,7 +64,6 @@ const GroupCall = () => {
           initializeMeeting(roomID);
           return;
         }
-        
         const createdTime = new Date(meetingData.createdAt).getTime();
         const currentTime = new Date().getTime();
         const fiveHoursInMs = 5 * 60 * 60 * 1000;
@@ -73,6 +73,7 @@ const GroupCall = () => {
           return;
         }
         initializeMeeting(roomID);
+        
         const timeRemaining = fiveHoursInMs - (currentTime - createdTime);
         expirationTimerRef.current = setTimeout(() => {
           setMeetingExpired(true);
@@ -124,7 +125,9 @@ const GroupCall = () => {
         scenario: {
           mode: ZegoUIKitPrebuilt.GroupCall,
         },
-        onLeaveRoom: exitMeeting,
+        onLeaveRoom: () => {
+          navigate('/dashboard');
+        },
         turnOnCameraWhenJoining: true,
         turnOnMicrophoneWhenJoining: true,
         showTurnOffRemoteCameraButton: true,
@@ -176,7 +179,9 @@ const GroupCall = () => {
         scenario: {
           mode: ZegoUIKitPrebuilt.GroupCall,
         },
-        onLeaveRoom: exitMeeting,
+        onLeaveRoom: () => {
+          navigate('/dashboard');
+        },
         turnOnCameraWhenJoining: true,
         turnOnMicrophoneWhenJoining: true,
         showTurnOffRemoteCameraButton: true,
@@ -211,7 +216,6 @@ const GroupCall = () => {
         console.error("Error saving meeting:", error);
       });
     }
-    
     return () => {
       if (expirationTimerRef.current) {
         clearTimeout(expirationTimerRef.current);
