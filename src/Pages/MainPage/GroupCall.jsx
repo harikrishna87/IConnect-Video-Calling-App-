@@ -47,7 +47,6 @@ const GroupCall = () => {
     if (zegoRef.current) return;
     
     const roomID = getUrlParams().get('roomID');
-    
     if (!roomID) {
       initializeNewMeeting();
       return;
@@ -59,11 +58,13 @@ const GroupCall = () => {
           initializeNewMeeting();
           return;
         }
+        
         const meetingData = response.data;
         if (!meetingData.createdAt) {
           initializeMeeting(roomID);
           return;
         }
+        
         const createdTime = new Date(meetingData.createdAt).getTime();
         const currentTime = new Date().getTime();
         const fiveHoursInMs = 5 * 60 * 60 * 1000;
@@ -73,7 +74,6 @@ const GroupCall = () => {
           return;
         }
         initializeMeeting(roomID);
-        
         const timeRemaining = fiveHoursInMs - (currentTime - createdTime);
         expirationTimerRef.current = setTimeout(() => {
           setMeetingExpired(true);
@@ -87,7 +87,6 @@ const GroupCall = () => {
         console.error("Error checking meeting:", error);
         initializeNewMeeting();
       });
-
     function initializeMeeting(roomID) {
       const appID = 705877539;
       const serverSecret = "26715cff20450f66afa5e35e3303d41c";
@@ -135,7 +134,6 @@ const GroupCall = () => {
         showRemoveUserButton: true,
       });
     }
-
     function initializeNewMeeting() {
       const appID = 705877539;
       const serverSecret = "26715cff20450f66afa5e35e3303d41c";
@@ -205,17 +203,12 @@ const GroupCall = () => {
             zegoRef.current = null;
           }
         }, 5 * 60 * 60 * 1000);
-        
-        window.history.replaceState(
-          null, 
-          document.title, 
-          window.location.pathname + '?roomID=' + newRoomID
-        );
       })
       .catch(error => {
         console.error("Error saving meeting:", error);
       });
     }
+    
     return () => {
       if (expirationTimerRef.current) {
         clearTimeout(expirationTimerRef.current);
@@ -226,11 +219,6 @@ const GroupCall = () => {
       }
     };
   }, [user, navigate]);
-  
-  if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
-  }
-  
   if (meetingExpired) {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
