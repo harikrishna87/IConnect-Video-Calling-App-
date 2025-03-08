@@ -14,6 +14,24 @@ const GroupCall = () => {
   const expirationTimerRef = useRef(null);
   const navigate = useNavigate();
   
+  const exitMeeting = () => {
+    if (zegoRef.current) {
+      // Turn off camera and microphone
+      zegoRef.current.turnOffCamera();
+      zegoRef.current.turnOffMicrophone();
+      
+      // Leave the room
+      zegoRef.current.leaveRoom();
+      
+      // Destroy the instance
+      zegoRef.current.destroy();
+      zegoRef.current = null;
+    }
+    
+    // Navigate to dashboard
+    navigate('/dashboard');
+  };
+  
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -124,10 +142,7 @@ const GroupCall = () => {
           mode: ZegoUIKitPrebuilt.GroupCall,
         },
         onLeaveRoom: () => {
-          if (zegoRef.current) {
-            zegoRef.current.destroy();
-            zegoRef.current = null;
-          }
+          navigate('/dashboard');  // Navigate to dashboard when user leaves
         },
         turnOnCameraWhenJoining: true,
         turnOnMicrophoneWhenJoining: true,
@@ -167,7 +182,7 @@ const GroupCall = () => {
         zegoRef.current = null;
       }
     };
-  }, [user]);
+  }, [user, navigate]);
   
   if (loading) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
@@ -182,10 +197,10 @@ const GroupCall = () => {
             This meeting has expired. Meetings are valid for 5 hours from creation.
           </p>
           <button 
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/dashboard')}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded focus:outline-none"
           >
-            Return to Home
+            Go to Dashboard
           </button>
         </div>
       </div>
@@ -195,10 +210,16 @@ const GroupCall = () => {
   if (!user) return null;
   
   return (
-    <div
-      className="myCallContainer"
-      ref={containerRef}
-      style={{ width: '100vw', height: '100vh' }}>
+    <div className="relative" style={{ width: '100vw', height: '100vh' }}>
+      <div 
+        className="absolute top-4 right-4 z-10"
+      >
+      </div>
+      <div
+        className="myCallContainer"
+        ref={containerRef}
+        style={{ width: '100vw', height: '100vh' }}>
+      </div>
     </div>
   );
 };

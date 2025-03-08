@@ -1,16 +1,48 @@
 import React, { useState, useEffect } from "react";
 import "./Mainpage.css";
-import { Skeleton, Row, Col, Card, Button, Dropdown, Menu } from "antd";
-import { EllipsisOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Skeleton, Row, Col, Card, Button, Dropdown, Menu, Tooltip } from "antd";
+import { EllipsisOutlined, DeleteOutlined, CopyOutlined, CheckOutlined } from "@ant-design/icons";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import { auth } from "../../Firebase/Firebase";
 
+// Add this CSS to your Mainpage.css file or add it inline in the head of your document
+// if you want to keep everything in one file
+const blinkingDotStyles = `
+@keyframes blink {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+.blinking-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #52c41a;
+  margin-right: 6px;
+  animation: blink 2s infinite;
+}
+`;
+
 const Meetings = () => {
     const [loading, setLoading] = useState(true);
     const [meetings, setMeetings] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
+    const [copiedLinks, setCopiedLinks] = useState({});
+
+    // Add the styles to the document head on component mount
+    useEffect(() => {
+        const styleElement = document.createElement('style');
+        styleElement.innerHTML = blinkingDotStyles;
+        document.head.appendChild(styleElement);
+
+        return () => {
+            document.head.removeChild(styleElement);
+        };
+    }, []);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -75,6 +107,26 @@ const Meetings = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const copyToClipboard = (text, roomID) => {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                // Set this specific link as copied
+                setCopiedLinks(prev => ({ ...prev, [roomID]: true }));
+                
+                // Show success toast
+                toast.success("Link copied to clipboard!");
+                
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    setCopiedLinks(prev => ({ ...prev, [roomID]: false }));
+                }, 3000);
+            })
+            .catch(err => {
+                console.error("Failed to copy: ", err);
+                toast.error("Failed to copy link");
+            });
     };
 
     return (
@@ -159,7 +211,36 @@ const Meetings = () => {
                                     fontSize: "16px"
                                 }}>
                                     <p>Type : Video Call</p>
-                                    <p style={{ fontWeight: "bold" }}>Active</p>
+                                    <p style={{ fontWeight: "bold", display: "flex", alignItems: "center" }}>
+                                        <span className="blinking-dot"></span>
+                                        Active
+                                    </p>
+                                </div>
+
+                                <div style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    marginBottom: "10px"
+                                }}>
+                                    <p style={{
+                                        fontSize: "13px",
+                                        fontWeight: "bold",
+                                        marginBottom: 0,
+                                        flex: 1,
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                    }}>
+                                        Link: <br />{meeting.meetingLink}
+                                    </p>
+                                    <Tooltip title={copiedLinks[meeting.roomID] ? "Copied!" : "Copy Link"}>
+                                        <Button 
+                                            type="text" 
+                                            icon={copiedLinks[meeting.roomID] ? <CheckOutlined style={{ color: "#52c41a" }} /> : <CopyOutlined />}
+                                            onClick={() => copyToClipboard(meeting.meetingLink, meeting.roomID)}
+                                            style={{ marginLeft: "8px" }}
+                                        />
+                                    </Tooltip>
                                 </div>
 
                                 <Button
