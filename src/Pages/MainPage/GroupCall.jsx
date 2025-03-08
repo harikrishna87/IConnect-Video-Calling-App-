@@ -46,38 +46,59 @@ const GroupCall = () => {
     if (zegoRef.current) return;
 
     const roomID = getUrlParams().get('roomID');
-    if (!roomID) return;
 
-    axios.get(`https://iconnect-back-end.onrender.com/meet/meetings/${roomID}`)
-      .then(response => {
-        if (!response.data) {
-          setMeetingExpired(true);
-          return;
-        }
+    if (roomID) {
+      joinExistingMeeting(roomID);
+    } else {
+      createNewMeeting();
+    }
 
-        const meetingData = response.data;
-        const createdTime = new Date(meetingData.createdAt).getTime();
-        const currentTime = new Date().getTime();
-        const fiveHoursInMs = 5 * 60 * 60 * 1000;
-
-        if (currentTime - createdTime > fiveHoursInMs) {
-          setMeetingExpired(true);
-          return;
-        }
-
-        initializeMeeting(roomID);
-
-        const timeRemaining = fiveHoursInMs - (currentTime - createdTime);
-        expirationTimerRef.current = setTimeout(() => {
-          setMeetingExpired(true);
-          if (zegoRef.current) {
-            zegoRef.current.destroy();
+    function joinExistingMeeting(roomID) {
+      axios.get(`https://iconnect-back-end.onrender.com/meet/meetings/${roomID}`)
+        .then(response => {
+          if (!response.data) {
+            createNewMeeting();
+            return;
           }
-        }, timeRemaining);
-      })
-      .catch(error => {
-        console.error("Error checking meeting:", error);
+
+          const meetingData = response.data;
+          const createdTime = new Date(meetingData.createdAt).getTime();
+          const currentTime = new Date().getTime();
+          const fiveHoursInMs = 5 * 60 * 60 * 1000;
+
+          if (currentTime - createdTime > fiveHoursInMs) {
+            setMeetingExpired(true);
+            return;
+          }
+
+          initializeMeeting(roomID);
+
+          const timeRemaining = fiveHoursInMs - (currentTime - createdTime);
+          expirationTimerRef.current = setTimeout(() => {
+            setMeetingExpired(true);
+            if (zegoRef.current) {
+              zegoRef.current.destroy();
+            }
+          }, timeRemaining);
+        })
+        .catch(error => {
+          createNewMeeting();
+        });
+    }
+
+    function createNewMeeting() {
+      const newRoomID = randomID(5);
+      const meetingLink = `${window.location.origin}/group_call?roomID=${newRoomID}`;
+
+      initializeMeeting(newRoomID);
+
+      axios.post("https://iconnect-back-end.onrender.com/meet/meetings", {
+        roomID: newRoomID,
+        userID: user.uid,
+        meetingLink: meetingLink,
+        createdAt: new Date().toISOString()
       });
+    }
 
     function initializeMeeting(roomID) {
       const appID = 705877539;
