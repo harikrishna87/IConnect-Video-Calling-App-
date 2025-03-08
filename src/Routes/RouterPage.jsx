@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import Home from "../Pages/LandingPage/LandingPageHome";
 import Login from '../Components/Login';
 import Signup from '../Components/Signup';
-import ForgotPass from '../Components/ForgotPass/ForgotPass';
 import NotFound from '../Pages/NotFound';
 import Dashboard from '../Pages/MainPage/Dashboard';
 import LoadingSpinner from '../Components/LoadingSpinner';
