@@ -8,6 +8,7 @@ import { Button, Input, Form } from "antd";
 import { SyncOutlined } from "@ant-design/icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios"
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -31,59 +32,50 @@ const Signup = () => {
     setUserdetails({ ...userdetails, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const { username, email, password } = userdetails;
+
     if (!username.trim()) {
-      toast.error("Username is required.");
-      return;
+        toast.error("Username is required.");
+        return;
     }
     if (!isValidEmail(email)) {
-      toast.error("Please enter a valid email.");
-      return;
+        toast.error("Please enter a valid email.");
+        return;
     }
     if (!isValidPassword(password)) {
-      toast.error("Password: 8+ chars, letters, numbers, specials");
-      return;
+        toast.error("Password: 8+ chars, letters, numbers, specials");
+        return;
     }
 
     setLoading(true);
-
-    const db = getFirestore(app);
-    async function saveUserDetails(userId, name, email) {
-      try {
-        await addDoc(collection(db, "users"), {
-          userId: userId,
-          name: name,
-          email: email,
-          createdAt: new Date()
-        });
-        console.log("User details saved successfully!");
-      } catch (error) {
-        console.error("Error saving user details: ", error);
-      }
-    }
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        return updateProfile(user, { displayName: username });
-      })
-      .then(() => {
+        await updateProfile(user, { displayName: username });
+
+        await axios.post("https://iconnect-back-end.onrender.com/users/user_details", {
+            username,
+            email,
+            uid: user.uid,
+        });
+
+        setUserdetails({ username: "", email: "", password: "" });
         toast.success("Signup successful! Redirecting to Login Page....");
         setTimeout(() => navigate("/login"), 2000);
-      })
-      .catch((error) => {
+    } catch (error) {
         if (error.code === "auth/email-already-in-use") {
-          toast.error("Email already exists.");
+            toast.error("Email already exists.");
         } else if (error.code === "auth/weak-password") {
-          toast.error("Password is too weak.");
+            toast.error("Password is too weak.");
         } else {
-          toast.error(error.message);
+            toast.error(error.message);
         }
-      })
-      .finally(() => {
+    } finally {
         setLoading(false);
-      });
-  };
+    }
+};
+
 
 
   return (

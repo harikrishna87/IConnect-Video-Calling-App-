@@ -7,6 +7,7 @@ import { auth, googleProvider } from "../Firebase/Firebase";
 import Logo from "../assets/Images/Logo1.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,15 +19,11 @@ const Login = () => {
   };
 
   const handleLoginSuccess = () => {
-    // Check if there's a saved redirect path
     const redirectPath = localStorage.getItem('redirectAfterLogin');
     if (redirectPath) {
-      // Clear the stored path
       localStorage.removeItem('redirectAfterLogin');
-      // Navigate to the intended destination
       setTimeout(() => navigate(redirectPath, { replace: true }), 2000);
     } else {
-      // Regular navigation to dashboard
       setTimeout(() => navigate("/dashboard", { replace: true }), 2000);
     }
   };
@@ -46,23 +43,51 @@ const Login = () => {
 
   const handleGoogleLogin = () => {
     setLoading({ ...loading, google: true });
+
     signInWithPopup(auth, googleProvider)
-      .then(() => {
+      .then((result) => {
+        const user = result.user;
+        const userData = {
+          uid: user.uid,
+          email: user.email,
+          username: user.displayName,
+          photoURL: user.photoURL,
+        };
+
+        return axios.post("https://iconnect-back-end.onrender.com/users/user_details", userData);
+      })
+      .then((response) => {
         toast.success("Google login successful!!!");
         handleLoginSuccess();
       })
-      .catch(() => toast.error("Google login failed"))
+      .catch((error) => {
+        console.error("Login error:", error);
+        toast.error("Google login failed");
+      })
       .finally(() => setLoading({ ...loading, google: false }));
   };
 
   const handleGuestLogin = () => {
     setLoading({ ...loading, guest: true });
+
     signInAnonymously(auth)
-      .then(() => {
+      .then((result) => {
+        const user = result.user;
+        const userData = {
+          uid: user.uid,
+          email: user.email || "ananymous@gmail.com",
+          username: user.displayName || "Guest User"
+        };
+        return axios.post("https://iconnect-back-end.onrender.com/users/user_details", userData);
+      })
+      .then((response) => {
         toast.success("Logged in as Guest!!!");
         handleLoginSuccess();
       })
-      .catch(() => toast.error("Guest login failed"))
+      .catch((error) => {
+        console.error("Guest login error:", error);
+        toast.error("Guest login failed");
+      })
       .finally(() => setLoading({ ...loading, guest: false }));
   };
 

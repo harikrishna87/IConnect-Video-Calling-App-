@@ -13,6 +13,7 @@
     "@zegocloud/zego-uikit-prebuilt": "^2.14.1",
     "antd": "^5.24.2",
     "antd-icons": "^0.1.0-alpha.1",
+    "axios": "^1.8.2",
     "bootstrap": "^5.3.3",
     "firebase": "^11.3.1",
     "framer-motion": "^12.4.7",

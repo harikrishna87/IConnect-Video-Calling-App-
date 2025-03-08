@@ -1,99 +1,179 @@
 import React, { useState, useEffect } from "react";
 import "./Mainpage.css";
-import {
-    Button,
-    Modal,
-    DatePicker,
-    ConfigProvider,
-    Space,
-    Skeleton,
-    Row,
-    Col,
-    Card,
-} from "antd";
-import { CalendarOutlined } from "@ant-design/icons";
-import en from "antd/es/date-picker/locale/en_US";
-import enUS from "antd/es/locale/en_US";
-import dayjs from "dayjs";
-import buddhistEra from "dayjs/plugin/buddhistEra";
-
-dayjs.extend(buddhistEra);
-
-const buddhistLocale = {
-    ...en,
-    lang: {
-        ...en.lang,
-        fieldDateFormat: "BBBB-MM-DD",
-        fieldDateTimeFormat: "BBBB-MM-DD HH:mm:ss",
-        yearFormat: "BBBB",
-        cellYearFormat: "BBBB",
-    },
-};
-
-const globalBuddhistLocale = {
-    ...enUS,
-    DatePicker: {
-        ...enUS.DatePicker,
-        lang: buddhistLocale.lang,
-    },
-};
-
-const defaultValue = dayjs("2024-01-01");
+import { Skeleton, Row, Col, Card, Button, Dropdown, Menu } from "antd";
+import { EllipsisOutlined, DeleteOutlined } from "@ant-design/icons";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
+import { auth } from "../../Firebase/Firebase";
 
 const Meetings = () => {
-    const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [meetings, setMeetings] = useState([]);
+    const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
-        setTimeout(() => {
-            setLoading(false);
-        }, 2000);
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                setCurrentUser(user);
+                fetchMeetings(user.uid);
+            } else {
+                setCurrentUser(null);
+                setLoading(false);
+            }
+        });
+
+        return () => unsubscribe();
     }, []);
 
-    const showLoading = () => {
-        setOpen(true);
+    const fetchMeetings = async (userID) => {
+        try {
+            const response = await axios.get("https://iconnect-back-end.onrender.com/meet/meetings/links");
+
+            if (response.data && response.data.meetings_available) {
+                const filteredMeetings = response.data.meetings_available.filter(
+                    meeting => meeting.userID === userID
+                );
+                setMeetings(filteredMeetings);
+            } else {
+                console.error("Unexpected response structure:", response.data);
+            }
+        } catch (error) {
+            console.error("Error fetching meetings:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const onChange = (_, dateStr) => {
-        console.log("Selected Date:", dateStr);
+    const formatDateTime = (isoString) => {
+        const date = new Date(isoString);
+        return date.toLocaleString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+        });
+    };
+
+    const handleDeleteMeeting = async (roomID) => {
+        try {
+            setLoading(true);
+
+            const response = await axios.post("https://iconnect-back-end.onrender.com/meet/meetings/delete", {
+                roomID: roomID
+            });
+
+            if (response.status === 200) {
+                setMeetings(prevMeetings => prevMeetings.filter(meet => meet.roomID !== roomID));
+                toast.success("Meeting deleted successfully");
+            }
+        } catch (error) {
+            console.error("Error deleting meeting:", error);
+            toast.error("Failed to delete meeting");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <>
-            {loading ? (
-                <div className="container">
-                    <div className="header">
-                        <Skeleton.Input active size={"small"}/>
-                        <Skeleton.Input active size={"small"} />
-                    </div>
+            <ToastContainer position="top-right" autoClose={3000} />
+            <div className="container">
+                <div className="header">
+                    {loading ? <Skeleton.Input active size={"small"} /> : <h2>Meetings</h2>}
                 </div>
-            ) : (
-                <div className="container">
-                    <div className="header">
-                        <h2>Meetings</h2>
-                        <Button type="primary" onClick={showLoading}>
-                            Add Meeting
-                        </Button>
-                    </div>
-                </div>
-            )}
+            </div>
 
             <Row gutter={[16, 16]} style={{ marginTop: "20px" }}>
                 {loading ? (
                     Array.from({ length: 6 }).map((_, index) => (
                         <Col key={index} xs={24} sm={12} md={8}>
-                            <Card>
+                            <Card className="meeting-card">
                                 <Skeleton active />
                             </Card>
                         </Col>
                     ))
-                ) : meetings.length > 0 ? (
+                ) : meetings && meetings.length > 0 ? (
                     meetings.map((meeting, index) => (
                         <Col key={index} xs={24} sm={12} md={8}>
-                            <Card title={meeting.name}>
-                                <p>{meeting.description}</p>
-                                <p>Date & Time: {meeting.date}</p>
+                            <Card className="meeting-card" hoverable>
+                                <div style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    position: "relative",
+                                }}>
+                                    <h4 style={{
+                                        color: "transparent",
+                                        background: "linear-gradient(135deg, #3c8dff 0%, #6a5aff 100%)",
+                                        WebkitbackgroundClip: "text",
+                                        backgroundClip: "text"
+                                    }}>Meeting Details</h4>
+
+                                    <Dropdown
+                                        overlay={
+                                            <Menu style={{ minWidth: "120px", borderRadius: "8px" }}>
+                                                <Menu.Item
+                                                    key="delete"
+                                                    style={{
+                                                        color: "white",
+                                                        backgroundColor: "#FF4D4F",
+                                                        borderRadius: "5px",
+                                                        textAlign: "center",
+                                                        gap: "8px",
+                                                    }}
+                                                    onClick={() => handleDeleteMeeting(meeting.roomID)}
+                                                >
+                                                    <DeleteOutlined />
+                                                    <span style={{
+                                                        paddingLeft: "5px"
+                                                    }}>Delete</span>
+                                                </Menu.Item>
+                                            </Menu>
+                                        }
+                                        trigger={["click"]}
+                                        placement="bottomRight"
+                                    >
+                                        <EllipsisOutlined
+                                            style={{
+                                                fontSize: "20px",
+                                                cursor: "pointer",
+                                                padding: "6px",
+                                                borderRadius: "50%",
+                                                transition: "background 0.3s",
+                                            }}
+                                        />
+                                    </Dropdown>
+                                </div>
+
+                                <p style={{ fontSize: "16px", fontWeight: 400 }}>
+                                    Meeting Created: {formatDateTime(meeting.createdAt)}
+                                </p>
+
+                                <div style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    fontSize: "16px"
+                                }}>
+                                    <p>Type : Video Call</p>
+                                    <p style={{ fontWeight: "bold" }}>Active</p>
+                                </div>
+
+                                <Button
+                                    type="primary"
+                                    href={meeting.meetingLink}
+                                    target="_blank"
+                                    style={{
+                                        textDecoration: "none",
+                                        color: "white",
+                                        fontSize: "18px"
+                                    }}
+                                >
+                                    Join Meeting
+                                </Button>
                             </Card>
                         </Col>
                     ))
@@ -101,60 +181,10 @@ const Meetings = () => {
                     <Col span={24} style={{ textAlign: "center", marginTop: 20 }}>
                         <div className="no_meetings">
                             <h1>No meetings are scheduled</h1>
-                            <p>Click the "Add Meeting" button to schedule a meeting</p>
                         </div>
                     </Col>
                 )}
             </Row>
-
-            <Modal
-                title={
-                    <h4
-                        style={{
-                            textAlign: "center",
-                            background:
-                                "linear-gradient(135deg, #3c8dff 0%, #6a5aff 100%)",
-                            color: "transparent",
-                            WebkitBackgroundClip: "text",
-                            backgroundClip: "text",
-                        }}
-                    >
-                        Schedule a Meeting
-                    </h4>
-                }
-                open={open}
-                onCancel={() => setOpen(false)}
-                footer={
-                    <Button
-                        type="primary"
-                        onClick={showLoading}
-                        style={{ fontSize: "18px", padding: "20px" }}
-                    >
-                        Start Meeting
-                    </Button>
-                }
-            >
-                {loading ? (
-                    <Skeleton active />
-                ) : (
-                    <form action="" className="meeting_form">
-                        <label htmlFor="meetingsname">Meeting Name:</label>
-                        <input type="text" id="meetingsname" name="meetingsname" />
-                        <br />
-                        <label htmlFor="description">Description:</label>
-                        <textarea name="description" id="description" rows={4}></textarea>
-                        <br />
-
-                        <label htmlFor="Date*Time">Enter Date & Time:</label>
-                        <br />
-                        <ConfigProvider locale={globalBuddhistLocale} className="date">
-                            <Space direction="vertical">
-                                <DatePicker defaultValue={defaultValue} showTime onChange={onChange} />
-                            </Space>
-                        </ConfigProvider>
-                    </form>
-                )}
-            </Modal>
         </>
     );
 };

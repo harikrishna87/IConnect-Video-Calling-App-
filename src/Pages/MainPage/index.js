@@ -16,10 +16,10 @@ export const useProfileLogic = () => {
   const auth = getAuth();
 
   const [profileData, setProfileData] = useState({
-    linkedin: "LinkedIn Link",
-    github: "Github Link",
+    linkedin: "https://www.linkedin.com/",
+    github: "https://github.com/",
     mobile: "9876543210",
-    dob: "DD / MM / YYYY",
+    dob: "02 / 12 / 2000",
   });
   
   useEffect(() => {
