@@ -51,7 +51,6 @@ const GroupCall = () => {
   
   useEffect(() => {
     if (!user || !containerRef.current) return;
-    
     if (zegoRef.current) return;
     
     const roomID = getUrlParams().get('roomID') || randomID(5);
@@ -70,22 +69,23 @@ const GroupCall = () => {
       userName = `User_${userID.slice(0, 5)}`;
     }
 
-    const checkMeetingExpiration = () => {
-      axios.get(`https://iconnect-back-end.onrender.com/meet/meetings/${roomID}`)
-        .then(response => {
+    // First check if the meeting exists and if it's expired
+    axios.get(`https://iconnect-back-end.onrender.com/meet/meetings/${roomID}`)
+      .then(response => {
+        // Meeting exists, check if it's expired
+        if (response.data) {
           const meetingData = response.data;
-          if (meetingData && meetingData.createdAt) {
+          if (meetingData.createdAt) {
             const createdTime = new Date(meetingData.createdAt).getTime();
             const currentTime = new Date().getTime();
             const fiveHoursInMs = 5 * 60 * 60 * 1000;
             
             if (currentTime - createdTime > fiveHoursInMs) {
+              // Meeting has expired
               setMeetingExpired(true);
-              if (zegoRef.current) {
-                zegoRef.current.destroy();
-                zegoRef.current = null;
-              }
+              return; // Stop execution here
             } else {
+              // Meeting is valid - set timeout for expiration
               const timeRemaining = fiveHoursInMs - (currentTime - createdTime);
               expirationTimerRef.current = setTimeout(() => {
                 setMeetingExpired(true);
@@ -94,28 +94,59 @@ const GroupCall = () => {
                   zegoRef.current = null;
                 }
               }, timeRemaining);
+              
+              // Initialize the meeting
+              initializeMeeting(roomID, userID, userName);
             }
+          } else {
+            // Meeting exists but doesn't have createdAt timestamp
+            initializeNewMeeting(roomID, userID, userName);
           }
-        })
-        .catch(error => {
-          console.error("Error checking meeting expiration:", error);
-        });
-    };
-
-    axios.get(`https://iconnect-back-end.onrender.com/meet/meetings/${roomID}`)
-      .then(response => {
-        if (response.data) {
-          checkMeetingExpiration();
         } else {
-          initializeNewMeeting();
+          // Meeting doesn't exist, create a new one
+          initializeNewMeeting(roomID, userID, userName);
         }
       })
       .catch(error => {
         console.error("Error checking meeting:", error);
-        initializeNewMeeting();
+        // On error, try to create a new meeting
+        initializeNewMeeting(roomID, userID, userName);
       });
 
-    const initializeNewMeeting = () => {
+    // Function to initialize existing meeting
+    const initializeMeeting = (roomID, userID, userName) => {
+      const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+        appID, 
+        serverSecret, 
+        roomID, 
+        userID, 
+        userName
+      );
+
+      zegoRef.current = ZegoUIKitPrebuilt.create(kitToken);
+      
+      zegoRef.current.joinRoom({
+        container: containerRef.current,
+        sharedLinks: [
+          {
+            name: 'Personal link',
+            url: window.location.href
+          },
+        ],
+        scenario: {
+          mode: ZegoUIKitPrebuilt.GroupCall,
+        },
+        onLeaveRoom: exitMeeting,
+        turnOnCameraWhenJoining: true,
+        turnOnMicrophoneWhenJoining: true,
+        showTurnOffRemoteCameraButton: true,
+        showTurnOffRemoteMicrophoneButton: true,
+        showRemoveUserButton: true,
+      });
+    };
+
+    // Function to initialize and save a new meeting
+    const initializeNewMeeting = (roomID, userID, userName) => {
       const meetingLink = window.location.protocol + '//' + 
                     window.location.host + window.location.pathname +
                     '?roomID=' + roomID;
@@ -141,9 +172,7 @@ const GroupCall = () => {
         scenario: {
           mode: ZegoUIKitPrebuilt.GroupCall,
         },
-        onLeaveRoom: () => {
-          navigate('/dashboard');  // Navigate to dashboard when user leaves
-        },
+        onLeaveRoom: exitMeeting,
         turnOnCameraWhenJoining: true,
         turnOnMicrophoneWhenJoining: true,
         showTurnOffRemoteCameraButton: true,
@@ -151,6 +180,7 @@ const GroupCall = () => {
         showRemoveUserButton: true,
       });
 
+      // Save the new meeting to the database
       axios.post("https://iconnect-back-end.onrender.com/meet/meetings", {
         roomID: roomID,
         userID: userID,
@@ -160,6 +190,7 @@ const GroupCall = () => {
       .then(response => {
         console.log("Meeting saved successfully:", response.data);
         
+        // Set timeout for expiration (5 hours)
         expirationTimerRef.current = setTimeout(() => {
           setMeetingExpired(true);
           if (zegoRef.current) {
@@ -173,10 +204,13 @@ const GroupCall = () => {
       });
     };
     
+    // Cleanup function
     return () => {
       if (expirationTimerRef.current) {
         clearTimeout(expirationTimerRef.current);
+        expirationTimerRef.current = null;
       }
+      
       if (zegoRef.current) {
         zegoRef.current.destroy();
         zegoRef.current = null;
