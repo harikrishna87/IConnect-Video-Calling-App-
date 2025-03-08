@@ -54,11 +54,12 @@ const Login = () => {
           photoURL: user.photoURL,
         };
 
-        return axios.post("https://iconnect-back-end.onrender.com/users/user_details", userData);
-      })
-      .then((response) => {
         toast.success("Google login successful!!!");
         handleLoginSuccess();
+        axios.post("https://iconnect-back-end.onrender.com/users/user_details", userData)
+          .catch((error) => {
+            console.error("Backend API error:", error);
+          });
       })
       .catch((error) => {
         console.error("Login error:", error);
@@ -78,11 +79,13 @@ const Login = () => {
           email: user.email || "ananymous@gmail.com",
           username: user.displayName || "Guest User"
         };
-        return axios.post("https://iconnect-back-end.onrender.com/users/user_details", userData);
-      })
-      .then((response) => {
         toast.success("Logged in as Guest!!!");
         handleLoginSuccess();
+        
+        axios.post("https://iconnect-back-end.onrender.com/users/user_details", userData)
+          .catch((error) => {
+            console.error("Backend API error:", error);
+          });
       })
       .catch((error) => {
         console.error("Guest login error:", error);
