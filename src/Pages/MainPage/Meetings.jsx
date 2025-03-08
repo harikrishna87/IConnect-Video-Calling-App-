@@ -7,8 +7,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import { auth } from "../../Firebase/Firebase";
 
-// Add this CSS to your Mainpage.css file or add it inline in the head of your document
-// if you want to keep everything in one file
 const blinkingDotStyles = `
 @keyframes blink {
   0% { opacity: 0.4; }
@@ -33,7 +31,6 @@ const Meetings = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const [copiedLinks, setCopiedLinks] = useState({});
 
-    // Add the styles to the document head on component mount
     useEffect(() => {
         const styleElement = document.createElement('style');
         styleElement.innerHTML = blinkingDotStyles;
@@ -112,12 +109,10 @@ const Meetings = () => {
     const copyToClipboard = (text, roomID) => {
         navigator.clipboard.writeText(text)
             .then(() => {
-                // Set this specific link as copied
                 setCopiedLinks(prev => ({ ...prev, [roomID]: true }));
-                // Reset after 3 seconds
                 setTimeout(() => {
                     setCopiedLinks(prev => ({ ...prev, [roomID]: false }));
-                }, 3000);
+                }, 10000);
             })
             .catch(err => {
                 console.error("Failed to copy: ", err);

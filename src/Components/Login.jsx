@@ -120,7 +120,6 @@ const Login = () => {
               style={{ padding: "6px 12px" }}
             />
           </div>
-          <p style={{ textAlign: "right" }}><Link to="/forgotPass" style={{ textDecoration: "none" }}>Forgot Password?</Link></p>
           <div className="text-center mt-3">
             <Button
               type="primary"

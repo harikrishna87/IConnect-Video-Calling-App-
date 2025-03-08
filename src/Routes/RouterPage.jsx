@@ -51,7 +51,6 @@ const RouterPage = () => {
           <Route path="/" element={<LandingPageLayout />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/forgotPass" element={<ForgotPass />} />
           <Route path="/dashboard/*" element={<Dashboard />}>
             <Route index element={<HomePage />} />
             <Route path="profile" element={<ProfilePage />} />

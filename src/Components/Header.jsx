@@ -21,14 +21,6 @@ const Header = () => {
               SignIn
             </Link>
           </Button>
-          {/* <Button type="primary" style={{background: "linear-gradient(135deg, #3c8dff 0%, #6a5aff 100%)"}} >
-            <Link
-              to={"/signup"}
-              style={{ color: "white", letterSpacing: "2px", textDecoration: "none", fontSize: "18px", padding: "15px"}}
-            >
-              SignUp
-            </Link>
-          </Button> */}
         </div>
       </header>
     </>
