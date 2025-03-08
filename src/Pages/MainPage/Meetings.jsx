@@ -114,10 +114,6 @@ const Meetings = () => {
             .then(() => {
                 // Set this specific link as copied
                 setCopiedLinks(prev => ({ ...prev, [roomID]: true }));
-                
-                // Show success toast
-                toast.success("Link copied to clipboard!");
-                
                 // Reset after 3 seconds
                 setTimeout(() => {
                     setCopiedLinks(prev => ({ ...prev, [roomID]: false }));
