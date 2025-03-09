@@ -11,12 +11,14 @@ const GroupCall = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [meetingExpired, setMeetingExpired] = useState(false);
-  const [meetingNotFound, setMeetingNotFound] = useState(false);
-  const [isMeetingActive, setIsMeetingActive] = useState(false);
   const navigate = useNavigate();
+  const expirationTimerRef = useRef(null);
 
   const exitMeeting = () => {
     if (zegoRef.current) {
+      zegoRef.current.turnOffCamera();
+      zegoRef.current.turnOffMicrophone();
+      zegoRef.current.leaveRoom();
       zegoRef.current.destroy();
       zegoRef.current = null;
     }
@@ -41,40 +43,64 @@ const GroupCall = () => {
 
   useEffect(() => {
     if (!user || !containerRef.current) return;
-    if (zegoRef.current || isMeetingActive) return;
+    if (zegoRef.current) return;
 
     const roomID = getUrlParams().get('roomID');
 
     if (roomID) {
       joinExistingMeeting(roomID);
     } else {
-      navigate('/dashboard');
+      createNewMeeting();
     }
 
     function joinExistingMeeting(roomID) {
       axios.get(`https://iconnect-back-end.onrender.com/meet/meetings/${roomID}`)
         .then(response => {
           if (!response.data) {
-            setMeetingNotFound(true);
+            createNewMeeting();
             return;
           }
 
           const meetingData = response.data;
           const createdTime = new Date(meetingData.createdAt).getTime();
           const currentTime = new Date().getTime();
-          const fiveHoursInMs = 1 * 60 * 60 * 1000;
+          const fiveHoursInMs = 5 * 60 * 60 * 1000;
 
-          if (currentTime - createdTime > fiveHoursInMs || meetingData.deactivated) {
+          if (currentTime - createdTime > fiveHoursInMs) {
             setMeetingExpired(true);
             return;
           }
-
-          setIsMeetingActive(true);
           initializeMeeting(roomID);
+
+          const timeRemaining = fiveHoursInMs - (currentTime - createdTime);
+          expirationTimerRef.current = setTimeout(() => {
+            setMeetingExpired(true);
+            if (zegoRef.current) {
+              zegoRef.current.destroy();
+            }
+          }, timeRemaining);
         })
-        .catch(() => {
-          setMeetingNotFound(true);
+        .catch(error => {
+          console.error("Error fetching meeting data:", error);
+          initializeMeeting(roomID);
         });
+    }
+
+    function createNewMeeting() {
+      const newRoomID = randomID(5);
+      const meetingLink = `${window.location.origin}/group_call?roomID=${newRoomID}`;
+      initializeMeeting(newRoomID);
+      axios.post("https://iconnect-back-end.onrender.com/meet/meetings", {
+        roomID: newRoomID,
+        userID: user.uid,
+        meetingLink: meetingLink,
+        createdAt: new Date().toISOString()
+      }).catch(error => {
+        console.error("Error creating meeting:", error);
+      });
+
+      const newUrl = `${window.location.pathname}?roomID=${newRoomID}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
     }
 
     function initializeMeeting(roomID) {
@@ -84,33 +110,52 @@ const GroupCall = () => {
       const userName = user.displayName || user.email.split('@')[0];
 
       const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
-        appID,
-        serverSecret,
-        roomID,
-        userID,
+        appID, 
+        serverSecret, 
+        roomID, 
+        userID, 
         userName
       );
 
       zegoRef.current = ZegoUIKitPrebuilt.create(kitToken);
       zegoRef.current.joinRoom({
         container: containerRef.current,
-        scenario: { mode: ZegoUIKitPrebuilt.GroupCall },
-        onLeaveRoom: exitMeeting
+        sharedLinks: [
+          { name: 'Personal link', url: window.location.href }
+        ],
+        scenario: {
+          mode: ZegoUIKitPrebuilt.GroupCall,
+        },
+        onLeaveRoom: () => {
+          if (zegoRef.current) {
+            zegoRef.current.destroy();
+            zegoRef.current = null;
+          }
+          navigate('/dashboard');
+        },
+        turnOnCameraWhenJoining: true,
+        turnOnMicrophoneWhenJoining: true,
       });
     }
+
+    return () => {
+      if (expirationTimerRef.current) clearTimeout(expirationTimerRef.current);
+      if (zegoRef.current) zegoRef.current.destroy();
+    };
   }, [user, navigate]);
 
-  if (meetingExpired || meetingNotFound) {
+  if (meetingExpired) {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">
-            {meetingExpired ? 'Meeting Expired' : 'Meeting Not Found'}
-          </h2>
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Meeting Expired</h2>
           <p className="text-gray-700 mb-6">
-            {meetingExpired ? 'This meeting has expired.' : 'The meeting link is invalid.'}
+            This meeting has expired. Meetings are valid for 5 hours from creation.
           </p>
-          <button onClick={() => navigate('/dashboard')} className="w-full bg-blue-600 text-white py-2 px-4 rounded">
+          <button 
+            onClick={() => navigate('/dashboard')}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded focus:outline-none"
+          >
             Go to Dashboard
           </button>
         </div>
@@ -122,7 +167,11 @@ const GroupCall = () => {
 
   return (
     <div className="relative" style={{ width: '100vw', height: '100vh' }}>
-      <div ref={containerRef} style={{ width: '100vw', height: '100vh' }}></div>
+      <div
+        className="myCallContainer"
+        ref={containerRef}
+        style={{ width: '100vw', height: '100vh' }}>
+      </div>
     </div>
   );
 };
