@@ -10,9 +10,7 @@ const GroupCall = () => {
   const zegoRef = useRef(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [meetingExpired, setMeetingExpired] = useState(false);
   const navigate = useNavigate();
-  const expirationTimerRef = useRef(null);
 
   const exitMeeting = () => {
     if (zegoRef.current) {
@@ -54,49 +52,21 @@ const GroupCall = () => {
     }
 
     function joinExistingMeeting(roomID) {
-      axios.get(`https://iconnect-back-end.onrender.com/meet/meetings/${roomID}`)
-        .then(response => {
-          if (!response.data) {
-            createNewMeeting();
-            return;
-          }
-
-          const meetingData = response.data;
-          const createdTime = new Date(meetingData.createdAt).getTime();
-          const currentTime = new Date().getTime();
-          const fiveHoursInMs = 5 * 60 * 60 * 1000;
-
-          if (currentTime - createdTime > fiveHoursInMs) {
-            setMeetingExpired(true);
-            return;
-          }
-          initializeMeeting(roomID);
-
-          const timeRemaining = fiveHoursInMs - (currentTime - createdTime);
-          expirationTimerRef.current = setTimeout(() => {
-            setMeetingExpired(true);
-            if (zegoRef.current) {
-              zegoRef.current.destroy();
-            }
-          }, timeRemaining);
-        })
-        .catch(error => {
-          console.error("Error fetching meeting data:", error);
-          initializeMeeting(roomID);
-        });
+      initializeMeeting(roomID);
     }
 
     function createNewMeeting() {
       const newRoomID = randomID(5);
       const meetingLink = `${window.location.origin}/group_call?roomID=${newRoomID}`;
+      
       initializeMeeting(newRoomID);
+      
       axios.post("https://iconnect-back-end.onrender.com/meet/meetings", {
         roomID: newRoomID,
         userID: user.uid,
-        meetingLink: meetingLink,
-        createdAt: new Date().toISOString()
+        meetingLink: meetingLink
       }).catch(error => {
-        console.error("Error creating meeting:", error);
+        console.error("Error creating meeting record:", error);
       });
 
       const newUrl = `${window.location.pathname}?roomID=${newRoomID}`;
@@ -107,7 +77,17 @@ const GroupCall = () => {
       const appID = 705877539;
       const serverSecret = "26715cff20450f66afa5e35e3303d41c";
       const userID = user.uid;
-      const userName = user.displayName || user.email.split('@')[0];
+      
+      let userName = "User";
+      if (user.displayName) {
+        userName = user.displayName;
+      } else if (user.email) {
+        userName = user.email.split('@')[0];
+      } else if (user.phoneNumber) {
+        userName = `User-${user.phoneNumber.slice(-4)}`;
+      } else {
+        userName = `User-${user.uid.substring(0, 5)}`;
+      }
 
       const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
         appID, 
@@ -121,7 +101,10 @@ const GroupCall = () => {
       zegoRef.current.joinRoom({
         container: containerRef.current,
         sharedLinks: [
-          { name: 'Personal link', url: window.location.href }
+          { 
+            name: 'Copy Meeting Link', 
+            url: `${window.location.origin}/group_call?roomID=${roomID}`
+          }
         ],
         scenario: {
           mode: ZegoUIKitPrebuilt.GroupCall,
@@ -139,26 +122,14 @@ const GroupCall = () => {
     }
 
     return () => {
-      if (expirationTimerRef.current) clearTimeout(expirationTimerRef.current);
       if (zegoRef.current) zegoRef.current.destroy();
     };
   }, [user, navigate]);
 
-  if (meetingExpired) {
+  if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-        <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Meeting Expired</h2>
-          <p className="text-gray-700 mb-6">
-            This meeting has expired. Meetings are valid for 5 hours from creation.
-          </p>
-          <button 
-            onClick={() => navigate('/dashboard')}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded focus:outline-none"
-          >
-            Go to Dashboard
-          </button>
-        </div>
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-xl font-semibold">Loading meeting...</div>
       </div>
     );
   }
