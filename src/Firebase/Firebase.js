@@ -14,12 +14,12 @@ import {
 } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey:process.env.VITE_APIKEY,
-  authDomain: process.env.VITE_AUTHDOMAIN,
-  projectId: process.env.VITE_PROJECTID,
-  storageBucket: process.env.VITE_STORAGEBUCKET,
-  messagingSenderId: process.env.VITE_MESSAGINGSENDERID,
-  appId: process.env.VITE_APPID
+  apiKey: "AIzaSyCeqk3JJhAnTJdGB7iZBIS0srHJLzJJ91E",
+  authDomain: "vcar-9b07a.firebaseapp.com",
+  projectId: "vcar-9b07a",
+  storageBucket: "vcar-9b07a.firebasestorage.app",
+  messagingSenderId: "739056149851",
+  appId: "1:739056149851:web:e3bd682272650c79cce67e"
 };
 
 const app = initializeApp(firebaseConfig);
