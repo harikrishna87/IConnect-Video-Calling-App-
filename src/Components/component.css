@@ -189,9 +189,26 @@ header {
     gap: 20px;
 }
 
-@media (max-width: 475px) {
+.login {
+    margin-top: 100px;
+    margin-bottom: 50px;
+}
+
+@media (max-width: 768px) {
     .buttons{
         flex-direction: column;
+    }
+
+    .login-img {
+        display: none;
+    }
+
+    .login {
+        margin-top: 0px;
+    }
+
+    .content h1 {
+        font-size: 1.5em !important;
     }
 }
 

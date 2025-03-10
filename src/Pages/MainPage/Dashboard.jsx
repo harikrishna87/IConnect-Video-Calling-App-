@@ -104,14 +104,14 @@ const Dashboard = () => {
       label: 'HomePage',
     },
     {
-      key: '/dashboard/about',
-      icon: <InfoCircleOutlined />,
-      label: 'About Us',
-    },
-    {
       key: '/dashboard/meetings',
       icon: <VideoCameraOutlined />,
       label: 'Meetings',
+    },
+    {
+      key: '/dashboard/about',
+      icon: <InfoCircleOutlined />,
+      label: 'About Us',
     },
     {
       key: '/dashboard/profile',

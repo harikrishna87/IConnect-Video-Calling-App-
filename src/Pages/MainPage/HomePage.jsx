@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Skeleton, Carousel } from "antd";
+import { Button, Skeleton, Carousel, Row, Col, Card } from "antd";
 import { VideoCameraAddOutlined, SafetyOutlined, TeamOutlined, GlobalOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import "./Mainpage.css";
 
@@ -66,7 +66,7 @@ const HomePage = () => {
             <Skeleton.Input active size="large" style={{ width: '60%', maxWidth: '400px', height: '40px' }} />
           </div>
         ) : (
-          <h1 style={{ textAlign: "center" }}>
+          <h1 style={{ textAlign: "center" }} className='greet'>
             {getGreeting()}, {user ? user.displayName : ""}
           </h1>
         )}
@@ -74,7 +74,7 @@ const HomePage = () => {
 
       <div className="container hero_section">
         <div className="row">
-          <div className="col-12 col-sm-12 col-md-12 col-lg-6 mt-5">
+          <div className="col-12 col-sm-12 col-md-12 col-lg-6 sms">
             {loading ? (
               <div className="hero-skeleton" style={{ padding: '15px' }}>
                 <Skeleton.Input active size="large" style={{ width: '100%', height: '40px', marginBottom: '30px', display: "block" }} />
@@ -171,52 +171,50 @@ const HomePage = () => {
           >Why Choose Our Platform</h2>
         )}
 
-        <div className="row">
+        <Row gutter={[16, 16]} justify="center">
           {loading ? (
             Array(3).fill().map((_, index) => (
-              <div key={index} className="col-12 col-md-4 mb-4">
-                <div className="feature-card-skeleton p-4" style={{
-                  borderRadius: '10px',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  margin: '10px',
-                  height: '100%'
-                }}>
+              <Col xs={24} sm={12} md={8} lg={8} xl={6} key={index}>
+                <Card
+                  style={{ borderRadius: '10px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                  bodyStyle={{ padding: '20px', height: '100%' }}
+                >
                   <div className="text-center mb-3">
                     <Skeleton.Avatar active size={64} shape="circle" />
                   </div>
                   <div className="text-center mb-3">
-                    <Skeleton.Input active size="default" style={{ width: '70%', height: '24px' }} />
+                    <Skeleton.Input active size="default" style={{ width: '70%' }} />
                   </div>
                   <Skeleton active paragraph={{ rows: 2 }} title={false} />
-                </div>
-              </div>
+                </Card>
+              </Col>
             ))
           ) : (
             <>
-              <div className="col-12 col-md-4 mb-4">
-                <div className="feature-card">
-                  <div className="feature-icon"><SafetyOutlined /></div>
+              <Col xs={24} sm={12} md={8} lg={8} xl={6}>
+                <Card className="feature-card" hoverable>
+                  <div className="feature-icon"><SafetyOutlined style={{ fontSize: '24px' }} /></div>
                   <h3>End-to-End Encryption</h3>
                   <p>Your meetings are secure with our advanced encryption protocols.</p>
-                </div>
-              </div>
-              <div className="col-12 col-md-4 mb-4">
-                <div className="feature-card">
-                  <div className="feature-icon"><TeamOutlined /></div>
+                </Card>
+              </Col>
+              <Col xs={24} sm={12} md={8} lg={8} xl={6}>
+                <Card className="feature-card" hoverable>
+                  <div className="feature-icon"><TeamOutlined style={{ fontSize: '24px' }} /></div>
                   <h3>Large Group Support</h3>
                   <p>Host meetings with up to 20 participants without quality loss.</p>
-                </div>
-              </div>
-              <div className="col-12 col-md-4 mb-4">
-                <div className="feature-card">
-                  <div className="feature-icon"><GlobalOutlined /></div>
+                </Card>
+              </Col>
+              <Col xs={24} sm={12} md={8} lg={8} xl={6}>
+                <Card className="feature-card" hoverable>
+                  <div className="feature-icon"><GlobalOutlined style={{ fontSize: '24px' }} /></div>
                   <h3>Global Accessibility</h3>
                   <p>Connect with anyone, anywhere in the world with minimal latency.</p>
-                </div>
-              </div>
+                </Card>
+              </Col>
             </>
           )}
-        </div>
+        </Row>
       </div>
 
       <div className="container testimonials-section mt-5">

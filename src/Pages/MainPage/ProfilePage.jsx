@@ -231,7 +231,17 @@ const ProfilePage = () => {
                         margin: "0 0 8px 0"
                       }}>
                         <LinkedinOutlined style={{ marginRight: 8, color: '#0077B5' }} />
-                        {profileData.linkedin}
+                        <a
+                          href={profileData.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: '#0077B5',
+                            textDecoration: 'none'
+                          }}
+                        >
+                          {profileData.linkedin}
+                        </a>
                       </Title>
                     )}
                   </Form.Item>
@@ -257,14 +267,23 @@ const ProfilePage = () => {
                         margin: "0 0 8px 0"
                       }}>
                         <GithubOutlined style={{ marginRight: 8, color: '#333' }} />
-                        {profileData.github}
+                        <a
+                          href={profileData.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: '#333',
+                            textDecoration: 'none'
+                          }}
+                        >
+                          {profileData.github}
+                        </a>
                       </Title>
                     )}
                   </Form.Item>
                 </div>
               </Skeleton>
             </Col>
-
             <Col xs={24} sm={12}>
               <Skeleton loading={loading} active paragraph={{ rows: 4 }}>
                 <Title level={3} style={{ ...gradientTextStyle, marginBottom: "8px" }}>

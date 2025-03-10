@@ -74,6 +74,10 @@ body {
   font-weight: 800;
 }
 
+.sms{
+  padding-top: 50px;
+}
+
 /* HomePage Skeleton Loading  */
 
 .hero-skeleton,
@@ -97,7 +101,7 @@ body {
   font-size: 18px;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   .hero-skeleton {
     margin-bottom: 20px;
   }
@@ -105,6 +109,14 @@ body {
   .carousel-skeleton {
     margin-top: 20px;
   }
+  .sms{
+    padding-top: 0px;
+  }
+
+  .greet {
+    font-size: 25px;
+  }
+
 }
 
 .hero-carousel {
@@ -114,6 +126,10 @@ body {
 @media screen and (min-width: 900px) and (max-width: 1190px) {
   .hero-carousel {
     margin-top: 100px;
+  }
+
+  .sms {
+    padding-top: 100px;
   }
 }
 

@@ -6,6 +6,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import { auth } from "../../Firebase/Firebase";
+import { useNavigate } from "react-router-dom";
+import NMS from "../../assets/Images/nms.png"
 
 const blinkingDotStyles = `
 @keyframes blink {
@@ -30,6 +32,8 @@ const Meetings = () => {
     const [meetings, setMeetings] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
     const [copiedLinks, setCopiedLinks] = useState({});
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const styleElement = document.createElement('style');
@@ -120,12 +124,21 @@ const Meetings = () => {
             });
     };
 
+    const handlejoinmeeting = () => {
+        navigate("/group_call")
+    }
+
     return (
         <>
             <ToastContainer position="top-right" autoClose={3000} />
             <div className="container">
                 <div className="header">
                     {loading ? <Skeleton.Input active size={"small"} /> : <h2>Meetings</h2>}
+                    {loading ? <Skeleton.Input active size={"small"} /> : <Button onClick={handlejoinmeeting} style={{
+                        background: "linear-gradient(135deg, #3c8dff 0%, #6a5aff 100%)",
+                        color: "white",
+                        fontSize: "18px"
+                    }}>Start Meeting</Button>}
                 </div>
             </div>
 
@@ -225,8 +238,8 @@ const Meetings = () => {
                                         Link: <br />{meeting.meetingLink}
                                     </p>
                                     <Tooltip title={copiedLinks[meeting.roomID] ? "Copied!" : "Copy Link"}>
-                                        <Button 
-                                            type="text" 
+                                        <Button
+                                            type="text"
                                             icon={copiedLinks[meeting.roomID] ? <CheckOutlined style={{ color: "#52c41a" }} /> : <CopyOutlined />}
                                             onClick={() => copyToClipboard(meeting.meetingLink, meeting.roomID)}
                                             style={{ marginLeft: "8px" }}
@@ -250,9 +263,18 @@ const Meetings = () => {
                         </Col>
                     ))
                 ) : (
-                    <Col span={24} style={{ textAlign: "center", marginTop: 20 }}>
-                        <div className="no_meetings">
-                            <h1>No meetings are scheduled</h1>
+                    <Col span={24} style={{ marginTop: 20, textAlign: "center" }}>
+                        <div>
+                            <img src={NMS} alt="" width={300} height={300} className="img-fluid" />
+                            <h3 style={{
+                                padding: 
+                                "15px 0px"
+                            }}>Create Meeting Instantly By Clicking on <q style={{
+                                color: "transparent",
+                                background: "linear-gradient(135deg, #3c8dff 0%, #6a5aff 100%)",
+                                WebkitbackgroundClip: "text",
+                                backgroundClip: "text"
+                            }}>Start Meeting</q> Button</h3>
                         </div>
                     </Col>
                 )}
