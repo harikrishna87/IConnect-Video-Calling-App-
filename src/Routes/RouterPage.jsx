@@ -18,27 +18,22 @@ const RouterPage = () => {
   const [prevPath, setPrevPath] = useState('');
 
   useEffect(() => {
-    if (prevPath) {
-      const currentBasePath = '/' + location.pathname.split('/')[1];
-      const prevBasePath = '/' + prevPath.split('/')[1];
-      const isDashboardNavigation =
-        currentBasePath === '/dashboard' && prevBasePath === '/dashboard';
-      if (!isDashboardNavigation) {
-        setLoading(true);
+    const currentBasePath = '/' + location.pathname.split('/')[1];
+    const prevBasePath = '/' + prevPath.split('/')[1];
+    const isDashboardRoute = currentBasePath === '/dashboard';
+    if (isDashboardRoute) {
+      setLoading(false);
+    } else {
+      setLoading(true);
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 750);
 
-        const timer = setTimeout(() => {
-          setLoading(false);
-        }, 750);
-
-        return () => clearTimeout(timer);
-      }
+      return () => clearTimeout(timer);
     }
 
     setPrevPath(location.pathname);
   }, [location.pathname, prevPath]);
-  useEffect(() => {
-    setPrevPath(location.pathname);
-  }, []);
 
   return (
     <>
