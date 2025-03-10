@@ -111,6 +111,9 @@ const GroupCall = () => {
         },
         onLeaveRoom: () => {
           if (zegoRef.current) {
+            zegoRef.current.turnOffCamera();
+            zegoRef.current.turnOffMicrophone();
+            zegoRef.current.leaveRoom();
             zegoRef.current.destroy();
             zegoRef.current = null;
           }
