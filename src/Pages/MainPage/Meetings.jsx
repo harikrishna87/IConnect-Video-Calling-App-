@@ -250,7 +250,7 @@ const Meetings = () => {
                                 <Button
                                     type="primary"
                                     href={meeting.meetingLink}
-                                    target="_blank"
+                                    target="_self"
                                     style={{
                                         textDecoration: "none",
                                         color: "white",
@@ -269,7 +269,7 @@ const Meetings = () => {
                             <h3 style={{
                                 padding: 
                                 "15px 0px"
-                            }}>Create Meeting Instantly By Clicking on <q style={{
+                            }}>Create Instant Meeting By Clicking on <q style={{
                                 color: "transparent",
                                 background: "linear-gradient(135deg, #3c8dff 0%, #6a5aff 100%)",
                                 WebkitbackgroundClip: "text",
