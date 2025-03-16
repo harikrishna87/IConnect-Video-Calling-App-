@@ -166,12 +166,16 @@ const LandingPageHero = () => {
                         height: '50px',
                         padding: '0 30px',
                         fontSize: '16px',
-                        boxShadow: '0 10px 20px rgba(75, 86, 210, 0.2)'
+                        boxShadow: '0 10px 20px rgba(75, 86, 210, 0.2)',
+                        transition: 'transform 0.3s ease-in-out'
                       }}
                       onClick={handleLoginButton}
+                      onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
                     >
                       Start Call Now
                     </Button>
+
                     <Button
                       size="large"
                       style={{
@@ -180,9 +184,12 @@ const LandingPageHero = () => {
                         fontSize: '16px',
                         borderColor: '#4B56D2',
                         color: '#4B56D2',
-                        background: 'transparent'
+                        background: 'transparent',
+                        transition: 'transform 0.3s ease-in-out'
                       }}
                       onClick={handleLoginButton}
+                      onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
                     >
                       Learn More
                     </Button>
