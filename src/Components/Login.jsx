@@ -101,7 +101,7 @@ const Login = () => {
 
       <div className="row login">
         <div className="col-12 col-sm-12 col-md-12 col-lg-6 text-center mt-3">
-          <img src={Logo} alt="" width={300} height={80} className="img-fluid" />
+          <img src={Logo} alt="" width={300} height={80} className="login-img" />
 
           <div className="content">
             <h1 style={{
@@ -113,7 +113,9 @@ const Login = () => {
               backgroundClip: "text",
               paddingTop: "20px",
               paddingBottom: "20px"
-            }}>Video Calling Feature for Everyone</h1>
+            }}
+            className="login-img"
+            >Video Calling Feature for Everyone</h1>
             <img src={Logo1} alt="" width={350} height={200} style={{
               borderRadius: "15px",
               marginBottom: "20px"
