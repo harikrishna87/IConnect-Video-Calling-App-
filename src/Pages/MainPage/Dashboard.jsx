@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Layout, Menu, theme, Drawer, Divider, Modal } from 'antd';
 import { auth } from "../../Firebase/Firebase";
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
@@ -26,12 +26,25 @@ const Dashboard = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedKey, setSelectedKey] = useState('/dashboard');
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
   const {
     token: { colorBgContainer, borderRadiusLG, colorPrimary },
   } = theme.useToken();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) {
+        navigate("/");
+      } else {
+        setUser(currentUser);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -119,6 +132,10 @@ const Dashboard = () => {
       label: 'Profile',
     }
   ];
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
