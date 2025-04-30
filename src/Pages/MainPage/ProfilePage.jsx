@@ -22,7 +22,9 @@ import {
   PhoneOutlined,
   CalendarOutlined,
   UserOutlined,
-  UploadOutlined
+  UploadOutlined,
+  IdcardOutlined,
+  MailOutlined
 } from "@ant-design/icons";
 import { useProfileLogic } from './index.js';
 
@@ -37,7 +39,14 @@ const ProfilePage = () => {
     isEditing,
     avatarUrl,
     accountCreatedDate,
-    profileData,
+    profileData = {
+      bio: "Passionate developer with 5+ years of experience in web development. Specialized in React and modern JavaScript frameworks.",
+      role: "Software Developer",
+      linkedin: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe",
+      mobile: "+1 (555) 123-4567",
+      dob: "01 / 01 / 1990"
+    },
     form,
     handleEdit,
     handleCancel,
@@ -167,12 +176,39 @@ const ProfilePage = () => {
                       style={{ borderRadius: 8 }}
                     />
                   )}
-                  <Title level={3} style={{
+                  <Title level={4} style={{
                     ...gradientTextStyle,
-                    paddingTop: "10px"
+                    paddingTop: "25px",
+                    marginBottom: "5px"
                   }}>
-                    Profile Picture
+                    {/* {user ? user.displayName : "John Doe"} */}
+                    Biographical Information
                   </Title>
+                  
+                  {/* Bio section added below profile picture */}
+                  <Form.Item
+                    name="bio"
+                    style={{ marginBottom: "0" }}
+                  >
+                    {isEditing ? (
+                      <Input.TextArea
+                        placeholder="Enter your bio"
+                        autoSize={{ minRows: 2, maxRows: 4 }}
+                        style={{ maxWidth: "300px", margin: "0 auto" }}
+                      />
+                    ) : (
+                      <Text style={{
+                        display: 'block',
+                        fontSize: '16px',
+                        fontFamily: "Times New Roman",
+                        color: '#666',
+                        maxWidth: "300px",
+                        margin: "0 auto"
+                      }}>
+                        {profileData.bio || "Passionate developer with 5+ years of experience in web development. Specialized in React and modern JavaScript frameworks."}
+                      </Text>
+                    )}
+                  </Form.Item>
                 </div>
               )}
             </Col>
@@ -186,18 +222,47 @@ const ProfilePage = () => {
                   <Title level={5} style={{
                     fontWeight: "normal",
                     fontFamily: "Times New Roman",
+                    display: 'flex',
+                    alignItems: 'center',
                     margin: "0 0 8px 0"
                   }}>
+                    <UserOutlined style={{ marginRight: 8, color: '#1890ff' }} />
                     {user ? user.displayName : "Username"}
                   </Title>
                   <Text strong style={{ fontSize: 18 }}>Email:</Text>
                   <Title level={5} style={{
                     fontWeight: "normal",
                     fontFamily: "Times New Roman",
+                    display: 'flex',
+                    alignItems: 'center',
                     margin: "0 0 8px 0"
                   }}>
+                    <MailOutlined style={{ marginRight: 8, color: '#13c2c2' }} />
                     {user ? user.email : "Username@gmail.com"}
                   </Title>
+                  <Text strong style={{ fontSize: 18 }}>Role:</Text>
+                  <Form.Item
+                    name="role"
+                    style={{ marginBottom: "0" }}
+                  >
+                    {isEditing ? (
+                      <Input
+                        prefix={<IdcardOutlined style={{ color: '#722ed1' }} />}
+                        placeholder="Enter your role"
+                      />
+                    ) : (
+                      <Title level={5} style={{
+                        fontWeight: "normal",
+                        fontFamily: "Times New Roman",
+                        display: 'flex',
+                        alignItems: 'center',
+                        margin: "0 0 8px 0"
+                      }}>
+                        <IdcardOutlined style={{ marginRight: 8, color: '#722ed1' }} />
+                        {profileData.role || "Software Developer"}
+                      </Title>
+                    )}
+                  </Form.Item>
                 </Space>
               </Skeleton>
             </Col>

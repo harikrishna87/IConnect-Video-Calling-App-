@@ -56,7 +56,7 @@ const GroupCall = () => {
     }
 
     function createNewMeeting() {
-      const newRoomID = randomID(5);
+      const newRoomID = randomID(36);
       const meetingLink = `${window.location.origin}/group_call?roomID=${newRoomID}`;
       
       initializeMeeting(newRoomID);
