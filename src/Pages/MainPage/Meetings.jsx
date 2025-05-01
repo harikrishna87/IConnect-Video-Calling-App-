@@ -93,12 +93,8 @@ const Meetings = () => {
         return () => unsubscribe();
     }, []);
 
-    useEffect(() => {
-        if (meetings.length > 0 && currentUser) {
-            localStorage.setItem(`meetings_${currentUser.uid}`, JSON.stringify(meetings));
-        }
-    }, [meetings, currentUser]);
-
+    // Remove localStorage storage for meetings
+    
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentTime(new Date());
@@ -109,13 +105,7 @@ const Meetings = () => {
 
     const fetchMeetings = async (userID) => {
         try {
-            const storedMeetings = localStorage.getItem(`meetings_${userID}`);
-            
-            if (storedMeetings) {
-                setMeetings(JSON.parse(storedMeetings));
-                setLoading(false);
-                return;
-            }
+            // Remove localStorage fallback
             const response = await axios.get(`${apiBaseUrl}/meet/meetings/links`);
 
             if (response.data && response.data.meetings_available) {
@@ -123,16 +113,13 @@ const Meetings = () => {
                     meeting => meeting.userID === userID
                 );
                 setMeetings(filteredMeetings);
-                localStorage.setItem(`meetings_${userID}`, JSON.stringify(filteredMeetings));
+                // Remove localStorage storage
             } else {
                 console.error("Unexpected response structure:", response.data);
             }
         } catch (error) {
             console.error("Error fetching meetings:", error);
-            const storedMeetings = localStorage.getItem(`meetings_${userID}`);
-            if (storedMeetings) {
-                setMeetings(JSON.parse(storedMeetings));
-            }
+            // Remove localStorage fallback
         } finally {
             setLoading(false);
         }
@@ -159,14 +146,12 @@ const Meetings = () => {
                     roomID: roomID
                 });
             } catch (error) {
-                console.error("API call failed, using localStorage instead:", error);
+                console.error("API call failed:", error);
             }
             const updatedMeetings = meetings.filter(meet => meet.roomID !== roomID);
             setMeetings(updatedMeetings);
             
-            if (currentUser) {
-                localStorage.setItem(`meetings_${currentUser.uid}`, JSON.stringify(updatedMeetings));
-            }
+            // Remove localStorage storage
             
             toast.success("Meeting deleted successfully");
         } catch (error) {
@@ -236,7 +221,7 @@ const Meetings = () => {
             setLoading(true);
             const roomID = 'room_' + Date.now().toString(36) + Math.random().toString(36).substring(2);
             
-            // Create new meeting object
+            // Create new meeting object without ZegoCloud-related info
             const newMeeting = {
                 roomID: roomID,
                 userID: currentUser.uid,
@@ -260,27 +245,15 @@ const Meetings = () => {
                 });
                 if (response.data && response.data.success && response.data.meeting) {
                     setMeetings(prevMeetings => [...prevMeetings, response.data.meeting]);
-                    
-                    if (currentUser) {
-                        localStorage.setItem(`meetings_${currentUser.uid}`, 
-                            JSON.stringify([...meetings, response.data.meeting]));
-                    }
+                    // Remove localStorage storage
                 } else {
                     setMeetings(prevMeetings => [...prevMeetings, newMeeting]);
-                    
-                    if (currentUser) {
-                        localStorage.setItem(`meetings_${currentUser.uid}`, 
-                            JSON.stringify([...meetings, newMeeting]));
-                    }
+                    // Remove localStorage storage
                 }
             } catch (error) {
-                console.error("API call failed, using localStorage instead:", error);
+                console.error("API call failed:", error);
                 setMeetings(prevMeetings => [...prevMeetings, newMeeting]);
-                
-                if (currentUser) {
-                    localStorage.setItem(`meetings_${currentUser.uid}`, 
-                        JSON.stringify([...meetings, newMeeting]));
-                }
+                // Remove localStorage storage
             }
             
             toast.success("Meeting scheduled successfully");
@@ -322,7 +295,7 @@ const Meetings = () => {
                     description: values.description
                 });
             } catch (error) {
-                console.error("API call failed, using localStorage instead:", error);
+                console.error("API call failed:", error);
             }
             const updatedMeetings = meetings.map(meeting => 
                 meeting.roomID === currentEditMeeting.roomID 
@@ -331,9 +304,7 @@ const Meetings = () => {
             );
             
             setMeetings(updatedMeetings);
-            if (currentUser) {
-                localStorage.setItem(`meetings_${currentUser.uid}`, JSON.stringify(updatedMeetings));
-            }
+            // Remove localStorage storage
             
             toast.success("Meeting details updated successfully");
             setIsEditModalVisible(false);
@@ -585,7 +556,7 @@ const Meetings = () => {
                             <h3 style={{
                                 padding: "15px 0px"
                             }}>
-                                Create Meeting By Clicking on <q style={{
+                                Schedule a Meeting By Clicking on <q style={{
                                     color: "transparent",
                                     background: "linear-gradient(135deg, #6a5aff 0%, #3c8dff 100%)",
                                     WebkitBackgroundClip: "text",

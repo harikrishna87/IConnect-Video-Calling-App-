@@ -205,7 +205,7 @@ const ProfilePage = () => {
                         maxWidth: "300px",
                         margin: "0 auto"
                       }}>
-                        {profileData.bio || "Passionate developer with 5+ years of experience in web development. Specialized in React and modern JavaScript frameworks."}
+                        {profileData.bio || "Passionate developer with 1 year of experience in web development. Specialized in React and modern JavaScript frameworks."}
                       </Text>
                     )}
                   </Form.Item>
