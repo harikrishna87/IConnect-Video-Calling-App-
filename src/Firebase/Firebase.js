@@ -14,12 +14,12 @@ import {
 } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCeqk3JJhAnTJdGB7iZBIS0srHJLzJJ91E",
-  authDomain: "vcar-9b07a.firebaseapp.com",
-  projectId: "vcar-9b07a",
-  storageBucket: "vcar-9b07a.firebasestorage.app",
-  messagingSenderId: "739056149851",
-  appId: "1:739056149851:web:e3bd682272650c79cce67e"
+  apiKey: "AIzaSyDRaqMP74br8CZgTDbifq41hyKA-IXcEZI",
+  authDomain: "notify-5339a.firebaseapp.com",
+  projectId: "notify-5339a",
+  storageBucket: "notify-5339a.firebasestorage.app",
+  messagingSenderId: "139770666800",
+  appId: "1:139770666800:web:14c6641820f278f537f2f5"
 };
 
 const app = initializeApp(firebaseConfig);
